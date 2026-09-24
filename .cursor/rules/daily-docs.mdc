@@ -1,0 +1,35 @@
+---
+description: Keep AutoDrive's task tracker, interview Q&A and README up to date, and follow the daily Git sequence
+alwaysApply: true
+---
+
+# AutoDrive daily docs
+
+The learner tracks progress in three files. Keep them accurate whenever work is done.
+
+| File | Update when |
+|---|---|
+| `docs/tasks.md` | A task, fix or exercise is started, finished, deferred or added |
+| `docs/interview-qa.md` | A new concept is taught or a notable bug is explained |
+| `README.md` | A day's work is finished (the "Daily progress" section) |
+
+## docs/tasks.md
+
+- Add a `## Day N — Topic` section with tables that use the status key: ✅ Done · 🔄 In progress · ⬜ To do · ⏸️ Moved.
+- Update the **Overview** table (status and git tag).
+- Anything unfinished goes to **Known limitations** (with its planned fix) or the **Roadmap**. Don't leave it silently open.
+- New exercises for the learner go in **Your practice exercises** as ⬜.
+
+## docs/interview-qa.md
+
+- Add each question to the **Question index** and add a full answer under the matching `## Day N` heading, numbered from 1 within each day.
+- Answer style: direct answer first, then detail. Use AutoDrive's own code as the example.
+
+## Daily Git sequence
+
+1. `npm run build` in `client/` must pass.
+2. Code commit: `git add client` → `feat(client): …` / `fix(client): …`.
+3. Docs commit: `git add README.md docs` → `docs: day N notes, tasks and interview Q&A`.
+4. `git tag -a day-NN -m "Day N - Topic"`, then `git push origin main` and `git push origin day-NN`.
+
+Only commit, tag or push when the learner asks for it.

@@ -75,7 +75,12 @@ const currentYear = new Date().getFullYear()
 
       <div class="d-flex flex-column flex-md-row justify-content-between gap-2 small">
         <span>&copy; {{ currentYear }} {{ dealer.name }}. All rights reserved.</span>
-        <span>Prices exclude tax, title, license and dealer fees.</span>
+        <span>
+          Prices exclude tax, title, license and dealer fees.
+          <RouterLink class="link-light link-opacity-75 ms-2" :to="{ name: 'credits' }">
+            Photo credits
+          </RouterLink>
+        </span>
       </div>
     </div>
   </footer>

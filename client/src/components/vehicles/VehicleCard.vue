@@ -43,8 +43,12 @@ const efficiencyIcon = computed(() =>
       <img
         v-if="vehicle.image"
         :src="vehicle.image"
-        :alt="title"
-        class="card-img-top vehicle-media object-fit-cover"
+        :alt="`${title} in ${vehicle.exteriorColor}`"
+        class="card-img-top vehicle-media object-fit-cover bg-body-secondary"
+        width="960"
+        height="600"
+        loading="lazy"
+        decoding="async"
       />
       <div
         v-else
@@ -116,6 +120,7 @@ const efficiencyIcon = computed(() =>
 
 .vehicle-media {
   aspect-ratio: 16 / 10;
+  height: auto;
 }
 
 .vehicle-placeholder {

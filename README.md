@@ -43,15 +43,17 @@ client/
     ├── App.vue                Root component → MainLayout
     ├── router/index.js        Routes, 404 catch-all, smooth scroll to #hash links
     ├── layouts/MainLayout.vue Header + <RouterView /> + footer
-    ├── data/                  Mock data: vehicles, offers, dealer/locations, navigation
+    ├── data/                  Mock data: vehicles, offers, dealer/locations, navigation, image credits
     ├── utils/                 Formatters (currency, mileage, date) and vehicle helpers
     ├── components/
     │   ├── common/            SectionHeading
     │   ├── vehicles/          VehicleCard
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 HomeView, NotFoundView
+    └── views/                 HomeView, CreditsView, NotFoundView
 ```
+
+Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
 
 ## Daily progress
 
@@ -72,10 +74,12 @@ client/
 - Concepts: `ref`, `reactive`, `computed`, `watch`, `v-model` modifiers, props/emits, slots, lifecycle hooks, template refs, `defineExpose`, `nextTick`
 - Bootstrap: containers, grid, `row-cols`, flex utilities, spacing, cards, badges, buttons, navbar, carousel
 - Exercise: "Shop by body style" tiles built from the vehicle data; clicking a tile fills in the search form and shows the results with a summary line ("Any condition · Truck")
+- Real vehicle photos in `client/public/images/vehicles/`, with a photo credits page (`/credits`) for the Creative Commons licences
 
 ## Learning notes
 
-- [Interview questions & answers](docs/interview-qa.md) — updated every day
+- [Task tracker](docs/tasks.md): what's done, your practice exercises, known limitations and the roadmap. Updated every day.
+- [Interview questions & answers](docs/interview-qa.md): question index for self-testing plus full answers, grouped by day. Updated every day.
 
 ## Daily Git workflow
 
@@ -94,7 +98,7 @@ git status
 git add client
 git commit -m "feat(client): short summary of today's feature"
 
-# 3. Update README "Daily progress" and add today's section to docs/interview-qa.md
+# 3. Update docs: docs/tasks.md, docs/interview-qa.md and README "Daily progress"
 git add README.md docs
 git commit -m "docs: day N notes and interview Q&A"
 

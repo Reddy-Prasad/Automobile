@@ -2,8 +2,45 @@
 
 Questions collected while building AutoDrive, grouped by day. Each answer is written the way you would say it in an interview: a short direct answer first, then the detail.
 
-- [Day 1 — Project foundation](#day-1--project-foundation)
-- [Day 2 — Client homepage](#day-2--client-homepage)
+**How to revise:** read a question in the index below, answer it out loud, then open the answer to check yourself.
+
+## Question index
+
+**[Day 1 — Project foundation](#day-1--project-foundation)**
+
+1. What is Vue 3?
+2. What is Vite and why use it instead of Webpack?
+3. What is an SFC (Single File Component)?
+4. What is `<script setup>`?
+5. What is the Composition API, and how is it different from the Options API?
+6. What does `export default` vs a named export mean?
+7. What does `app.use(router)` do in `main.js`?
+8. What is `<RouterView />`?
+9. Why use `<RouterLink>` instead of `<a href>`?
+10. What is lazy loading a route?
+11. Explain the Bootstrap grid.
+12. What are Bootstrap's breakpoints?
+
+**[Day 2 — Client homepage](#day-2--client-homepage)**
+
+1. What's the difference between `ref()` and `reactive()`?
+2. When should you use `computed()` instead of a method?
+3. Explain "props down, events up".
+4. What does `col-12 col-md-6 col-lg-4` do at 500px, 800px and 1100px?
+5. Why create the Bootstrap carousel in `onMounted`, and why call `dispose()`?
+6. What does `v-model.number` do, and why was it needed?
+7. Why must `v-for` have a `:key`, and why not use the index?
+8. What is a slot, and what is fallback content?
+9. What do `defineExpose` and `useTemplateRef` do?
+10. What does `nextTick()` do?
+11. `v-if` vs `v-show`?
+12. `container` vs `container-fluid`?
+13. Why use `row-cols-*` instead of `col-*` for the body-style tiles?
+14. Why pass `vehicles` as a prop instead of importing the data inside the component?
+15. What happens if a vehicle with a new body style is added to the data?
+16. Two sibling components need to share state. What are your options?
+17. `public/` vs `src/assets/`: where should images go?
+18. Can you use any image you find online on a website?
 
 ---
 
@@ -205,3 +242,21 @@ In AutoDrive, clicking a body-style tile had to update the separate search form.
 1. **Lift the state up** into the common parent and pass it down as props. This is the standard answer for a few components.
 2. **Expose a command** with `defineExpose` and call it from the parent through a template ref. AutoDrive uses this: `vehicleSearch.value.searchBy({ bodyType })`. It's quick, but it couples the parent to the child's API.
 3. **Use a Pinia store** when many components, or several pages, need the same state. Search filters that must survive navigation to an inventory page are a good fit.
+
+### 17. `public/` vs `src/assets/`: where should images go?
+
+- **`public/`**: files are copied to the build as-is and referenced by an absolute URL, e.g. `'/images/vehicles/bmw-x5.jpg'`. Use it when the path comes from **data** (like `vehicle.image`), because Vite can't see a path inside a string.
+- **`src/assets/`**: files are imported (`import logo from '@/assets/logo.png'`) and Vite processes them: it adds a content hash to the filename for caching, and it fails the build if the file is missing. Use it for images written directly in a component.
+
+AutoDrive's car photos live in `public/` because the paths come from `vehicles.js`, the same way they would come from an API later.
+
+Related: `loading="lazy"` delays off-screen images, and `width`/`height` attributes let the browser reserve space before the image loads (with `height: auto` in CSS, so `aspect-ratio` still controls the shape).
+
+### 18. Can you use any image you find online on a website?
+
+No. Images are copyrighted by default. Use photos you own, stock photos you have a licence for, or openly licensed images. AutoDrive's photos come from Wikimedia Commons under Creative Commons licences:
+
+- **CC BY / CC BY-SA** require you to credit the author, link the licence and say if you changed the image. **SA** (ShareAlike) means that if you modify the image, you must share your modified version under the same licence.
+- **Public domain** needs no credit, but giving one is good practice.
+
+That's why the site has a `/credits` page built from `data/imageCredits.js`.
