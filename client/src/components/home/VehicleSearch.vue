@@ -17,12 +17,16 @@ const conditionOptions = [
 
 const priceOptions = [25000, 35000, 45000, 55000]
 
-const filters = reactive({
-  condition: 'all',
-  make: '',
-  bodyType: '',
-  maxPrice: '',
-})
+function emptyFilters() {
+  return {
+    condition: 'all',
+    make: '',
+    bodyType: '',
+    maxPrice: '',
+  }
+}
+
+const filters = reactive(emptyFilters())
 
 const makes = computed(() => uniqueValues(props.vehicles, 'make'))
 const bodyTypes = computed(() => uniqueValues(props.vehicles, 'bodyType'))
@@ -31,6 +35,17 @@ const matchCount = computed(() => filterVehicles(props.vehicles, filters).length
 function onSubmit() {
   emit('search', { ...filters })
 }
+
+function searchBy(criteria) {
+  Object.assign(filters, emptyFilters(), criteria)
+  onSubmit()
+}
+
+function reset() {
+  Object.assign(filters, emptyFilters())
+}
+
+defineExpose({ searchBy, reset })
 </script>
 
 <template>

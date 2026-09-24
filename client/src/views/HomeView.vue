@@ -1,11 +1,13 @@
 <script setup>
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, ref, useTemplateRef } from 'vue'
 import { vehicles } from '@/data/vehicles'
 import { filterVehicles } from '@/utils/vehicles'
+import { formatCurrency } from '@/utils/format'
 
 import HeroCarousel from '@/components/home/HeroCarousel.vue'
 import VehicleSearch from '@/components/home/VehicleSearch.vue'
 import VehicleShowcase from '@/components/home/VehicleShowcase.vue'
+import BodyStylesSection from '@/components/home/BodyStylesSection.vue'
 import OffersSection from '@/components/home/OffersSection.vue'
 import FinanceSection from '@/components/home/FinanceSection.vue'
 import ServiceSection from '@/components/home/ServiceSection.vue'
@@ -17,10 +19,26 @@ const featuredVehicles = computed(() => vehicles.filter((vehicle) => vehicle.fea
 const newVehicles = computed(() => vehicles.filter((vehicle) => vehicle.condition === 'new').slice(0, 4))
 const usedVehicles = computed(() => vehicles.filter((vehicle) => vehicle.condition !== 'new').slice(0, 4))
 
+const vehicleSearch = useTemplateRef('vehicleSearch')
 const searchCriteria = ref(null)
 const searchResults = computed(() =>
   searchCriteria.value ? filterVehicles(vehicles, searchCriteria.value) : [],
 )
+
+const conditionSummary = { all: 'Any condition', new: 'New', used: 'Used & CPO' }
+
+const searchSummary = computed(() => {
+  if (!searchCriteria.value) return ''
+  const { condition, make, bodyType, maxPrice } = searchCriteria.value
+  return [
+    conditionSummary[condition],
+    make,
+    bodyType,
+    maxPrice && `Under ${formatCurrency(maxPrice)}`,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+})
 
 async function onSearch(criteria) {
   searchCriteria.value = criteria
@@ -28,8 +46,13 @@ async function onSearch(criteria) {
   document.getElementById('search-results')?.scrollIntoView({ behavior: 'smooth' })
 }
 
+function onBodyStyleSelect(bodyType) {
+  vehicleSearch.value.searchBy({ bodyType })
+}
+
 function clearSearch() {
   searchCriteria.value = null
+  vehicleSearch.value.reset()
 }
 </script>
 
@@ -37,13 +60,14 @@ function clearSearch() {
   <h1 class="visually-hidden">AutoDrive — new, used and certified vehicles in Texas</h1>
 
   <HeroCarousel />
-  <VehicleSearch :vehicles="vehicles" @search="onSearch" />
+  <VehicleSearch ref="vehicleSearch" :vehicles="vehicles" @search="onSearch" />
 
   <VehicleShowcase
     v-if="searchCriteria"
     id="search-results"
     eyebrow="Search results"
     title="Vehicles that match"
+    :subtitle="searchSummary"
     :vehicles="searchResults"
   >
     <template #actions>
@@ -60,6 +84,7 @@ function clearSearch() {
     subtitle="Popular picks our customers are test-driving this week."
     :vehicles="featuredVehicles"
   />
+  <BodyStylesSection :vehicles="vehicles" @select="onBodyStyleSelect" />
   <VehicleShowcase
     id="new-vehicles"
     eyebrow="Just arrived"
