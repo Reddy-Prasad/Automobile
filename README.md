@@ -50,7 +50,7 @@ client/
     │   ├── vehicles/          VehicleCard
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 HomeView, CreditsView, NotFoundView
+    └── views/                 HomeView, VehiclesView, CreditsView, NotFoundView
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
@@ -75,6 +75,14 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Bootstrap: containers, grid, `row-cols`, flex utilities, spacing, cards, badges, buttons, navbar, carousel
 - Exercise: "Shop by body style" tiles built from the vehicle data; clicking a tile fills in the search form and shows the results with a summary line ("Any condition · Truck")
 - Real vehicle photos in `client/public/images/vehicles/`, with a photo credits page (`/credits`) for the Creative Commons licences
+
+### Day 3 — Vehicle inventory
+
+- New `/vehicles` page: live search, make / fuel / transmission / price / year / condition filters, sort, pagination (6 per page) and an empty state
+- Mock inventory grown to 24 vehicles, including `transmission` and `availability`
+- Homepage, header and footer link into inventory; `/vehicles?condition=new` seeds the form
+- Concepts: `map`, `filter`, `find`, `sort`, `some`, `every`, `includes`, destructuring, spread; Vue `ref`, `reactive`, `computed`, `v-model`, `v-for`
+- Exercise: add a Body style filter on the inventory page yourself
 
 ## Learning notes
 

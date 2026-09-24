@@ -110,6 +110,12 @@ defineExpose({ searchBy, reset })
               <button type="submit" class="btn btn-primary w-100" :disabled="matchCount === 0">
                 Show {{ matchCount }} {{ matchCount === 1 ? 'vehicle' : 'vehicles' }}
               </button>
+              <RouterLink
+                class="d-inline-block small mt-2 text-decoration-none"
+                :to="{ name: 'vehicles' }"
+              >
+                Open full inventory
+              </RouterLink>
             </div>
           </div>
         </div>

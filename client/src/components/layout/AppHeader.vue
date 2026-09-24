@@ -55,6 +55,11 @@ watch(
 
         <div id="mainNav" ref="navCollapse" class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto mb-3 mb-lg-0">
+            <li class="nav-item">
+              <RouterLink class="nav-link" active-class="active" :to="{ name: 'vehicles' }">
+                Inventory
+              </RouterLink>
+            </li>
             <li v-for="link in mainNav" :key="link.hash" class="nav-item">
               <RouterLink class="nav-link" :to="{ name: 'home', hash: link.hash }">
                 {{ link.label }}

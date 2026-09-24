@@ -35,6 +35,15 @@ const placeholderIcon = computed(() => {
 const efficiencyIcon = computed(() =>
   props.vehicle.fuelType === 'Electric' ? 'bi-lightning-charge' : 'bi-fuel-pump',
 )
+
+const availability = computed(() => {
+  const labels = {
+    AVAILABLE: { label: 'Available', class: 'text-success' },
+    RESERVED: { label: 'Reserved', class: 'text-danger' },
+    IN_TRANSIT: { label: 'In transit', class: 'text-warning-emphasis' },
+  }
+  return labels[props.vehicle.availability] ?? labels.AVAILABLE
+})
 </script>
 
 <template>
@@ -77,7 +86,10 @@ const efficiencyIcon = computed(() =>
 
     <div class="card-body d-flex flex-column">
       <h3 class="h6 fw-bold mb-0">{{ title }}</h3>
-      <p class="small text-body-secondary mb-3">{{ vehicle.trim }}</p>
+      <p class="small text-body-secondary mb-1">{{ vehicle.trim }}</p>
+      <p class="small fw-semibold mb-3" :class="availability.class">
+        <i class="bi bi-circle-fill availability-dot me-1"></i>{{ availability.label }}
+      </p>
 
       <div class="d-flex align-items-baseline flex-wrap gap-2">
         <span class="fs-5 fw-bold">{{ formatCurrency(vehicle.price) }}</span>
@@ -94,7 +106,7 @@ const efficiencyIcon = computed(() =>
 
       <ul class="list-unstyled small text-body-secondary d-flex flex-wrap gap-3 my-3">
         <li><i class="bi bi-speedometer2 me-1"></i>{{ formatMileage(vehicle.mileage) }}</li>
-        <li><i class="bi bi-gear me-1"></i>{{ vehicle.drivetrain }}</li>
+        <li><i class="bi bi-gear me-1"></i>{{ vehicle.transmission }}</li>
         <li><i class="bi me-1" :class="efficiencyIcon"></i>{{ vehicle.efficiency }}</li>
       </ul>
 
@@ -132,5 +144,10 @@ const efficiencyIcon = computed(() =>
 .favorite-btn {
   width: 2.25rem;
   height: 2.25rem;
+}
+
+.availability-dot {
+  font-size: 0.45rem;
+  vertical-align: middle;
 }
 </style>

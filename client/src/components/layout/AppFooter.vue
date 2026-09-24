@@ -32,6 +32,14 @@ const currentYear = new Date().getFullYear()
         <div class="col-6 col-md-4 col-lg-2">
           <p class="text-white fw-semibold mb-2">Shop</p>
           <ul class="list-unstyled small mb-0">
+            <li class="mb-1">
+              <RouterLink
+                class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"
+                :to="{ name: 'vehicles' }"
+              >
+                Inventory
+              </RouterLink>
+            </li>
             <li v-for="link in mainNav" :key="link.hash" class="mb-1">
               <RouterLink
                 class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"

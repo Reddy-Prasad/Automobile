@@ -42,6 +42,21 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 17. `public/` vs `src/assets/`: where should images go?
 18. Can you use any image you find online on a website?
 
+**[Day 3 — Vehicle inventory](#day-3--vehicle-inventory)**
+
+1. What does `map()` return, and where is it used in AutoDrive?
+2. How is `filter()` different from `find()`?
+3. Why copy the array before calling `sort()`?
+4. `some()` vs `every()`?
+5. Why do we call `.toLowerCase()` before `includes()`?
+6. What is destructuring, and why use it on `filters`?
+7. What does the spread operator do in `[...vehicles]` and `{ ...filters }`?
+8. Why is filtering done in a `computed` instead of a method?
+9. When is `reactive()` a better fit than `ref()` for a form?
+10. How does `v-model` keep the selects and the results in sync?
+11. How does pagination with `slice()` work?
+12. Why convert a `<select>` value with `Number()`?
+
 ---
 
 ## Day 1 — Project foundation
@@ -260,3 +275,73 @@ No. Images are copyrighted by default. Use photos you own, stock photos you have
 - **Public domain** needs no credit, but giving one is good practice.
 
 That's why the site has a `/credits` page built from `data/imageCredits.js`.
+
+## Day 3 — Vehicle inventory
+
+### 1. What does `map()` return, and where is it used in AutoDrive?
+
+`map()` always returns a **new array** of the same length, with each item transformed.
+
+`uniqueValues` uses it to pull one field off every vehicle: `vehicles.map((vehicle) => vehicle[key])`. Then `new Set(...)` drops duplicates and `[...]` turns the set back into an array. That is how the Make / Fuel / Transmission dropdowns are built from the data instead of being hard-coded.
+
+### 2. How is `filter()` different from `find()`?
+
+- `filter()` returns **every** match as a new array (possibly empty).
+- `find()` returns the **first** match, or `undefined`.
+
+Inventory uses `filter()` because a search can match many cars. The sort dropdown uses `find()` because it only needs the one option whose `value` equals `sortBy`.
+
+### 3. Why copy the array before calling `sort()`?
+
+`sort()` changes the array it is called on. `sortInventory` does `return [...vehicles].sort(compare)` so the original `vehicles` export stays in its original order. If you write `vehicles.sort(...)`, the homepage featured row would also change, because both pages import the same array.
+
+### 4. `some()` vs `every()`?
+
+- `some()` is true if **at least one** item passes the test. AutoDrive uses it for "EV option on this page".
+- `every()` is true only if **all** items pass. AutoDrive uses it for "Every vehicle on this page is available".
+
+On an empty array, `some()` is false and `every()` is true, which is why the available badge also checks `visibleVehicles.length > 0`.
+
+### 5. Why do we call `.toLowerCase()` before `includes()`?
+
+`includes()` is case-sensitive. `"civic".includes("Civic")` is false. The search box lowercases both the typed term and the haystack (`year + make + model + trim + bodyType + stockNumber`) so "civic", "CIVIC" and "Civic" all match.
+
+### 6. What is destructuring, and why use it on `filters`?
+
+Destructuring pulls properties out of an object into variables:
+
+```js
+const { search, make, fuelType } = filters
+```
+
+It keeps the `filter()` callback readable. Without it you would write `filters.search`, `filters.make`, `filters.fuelType` on every line.
+
+### 7. What does the spread operator do in `[...vehicles]` and `{ ...filters }`?
+
+Spread copies items into a new array or object. `[...vehicles]` is a shallow copy used before `sort()`. `{ ...filters }` (used on the homepage search emit) is a snapshot of the current form, so later typing does not change the object that was already sent.
+
+### 8. Why is filtering done in a `computed` instead of a method?
+
+A computed value is cached. Vue re-runs `filteredVehicles` only when `vehicles`, `filters` or `sortBy` change. A method would run again on every render — including unrelated ones, like hovering a favourite heart.
+
+That is why computed is the right tool for a derived list: the work is somewhat expensive (filter + sort 24 items, later hundreds), and the result should stay in sync with the form automatically.
+
+`visibleVehicles` is a second computed that depends on `filteredVehicles` and `currentPage`. Changing page does not re-filter; it only re-slices.
+
+### 9. When is `reactive()` a better fit than `ref()` for a form?
+
+Use `reactive()` when you have a group of related fields (`search`, `make`, `fuelType`, …) and you want `v-model="filters.make"` without `.value`. Use `ref()` for a single value such as `sortBy` or `currentPage`.
+
+Resetting a reactive form is `Object.assign(filters, emptyFilters())` — that mutates the same object, so Vue still tracks it. Replacing `filters = emptyFilters()` would not work, because `const filters` cannot be reassigned.
+
+### 10. How does `v-model` keep the selects and the results in sync?
+
+`v-model="filters.make"` is sugar for `:value="filters.make"` plus `@change`/`@input` that writes back. Because `filters` is reactive, that write triggers the `filteredVehicles` computed, which updates the cards. There is no "Search" click required on this page — every keystroke and dropdown change is live.
+
+### 11. How does pagination with `slice()` work?
+
+`paginate` does `items.slice((page - 1) * pageSize, page * pageSize)`. Page 1 of size 6 is indexes 0–5; page 2 is 6–11. `slice` does not change the original array. A `watch` on the filters resets `currentPage` to 1 so you never land on an empty page 4 after narrowing the results.
+
+### 12. Why convert a `<select>` value with `Number()`?
+
+HTML form values are always strings. `vehicle.year === "2026"` is false when `year` is the number `2026`. `filterInventory` uses `Number(year)` and `Number(maxPrice)` so the comparison is number-to-number.

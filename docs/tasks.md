@@ -13,7 +13,7 @@ Updated at the end of every day, before the `docs:` commit.
 |---|---|---|---|
 | 1 | Project foundation | ✅ Done | included in `day-02` |
 | 2 | Client homepage | ✅ Done | `day-02` |
-| 3 | _Not started — see [Roadmap](#roadmap-proposed)_ | ⬜ | — |
+| 3 | Client vehicle inventory | ✅ Done | — |
 
 ---
 
@@ -72,6 +72,25 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 3 — Vehicle inventory
+
+**Goal:** a `/vehicles` listing page that filters, sorts and paginates local mock data, and teaches JavaScript array methods through that feature.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | `/vehicles` route (lazy-loaded) | ✅ | `router/index.js`, `views/VehiclesView.vue` |
+| 2 | Expand mock inventory to 24 vehicles; add `transmission` and `availability` | ✅ | `data/vehicles.js` |
+| 3 | Reuse `VehicleCard` on the listing | ✅ | `VehiclesView.vue` |
+| 4 | Search plus make, fuel, transmission, price, year and condition filters | ✅ | `VehiclesView.vue`, `utils/vehicles.js` |
+| 5 | Sort (featured, price, year, mileage) | ✅ | `sortInventory()` |
+| 6 | Pagination (6 per page) and "Showing X–Y" | ✅ | `paginate()`, `VehiclesView.vue` |
+| 7 | Empty state with a clear-filters action | ✅ | `VehiclesView.vue` |
+| 8 | Header Inventory link is `active` on this page; footer + homepage "browse" links | ✅ | `AppHeader.vue`, `AppFooter.vue`, `HomeView.vue` |
+| 9 | Seed filters from the query string (`/vehicles?condition=new`) | ✅ | `VehiclesView.vue` |
+| 10 | Learn: `map`, `filter`, `find`, `sort`, `some`, `every`, `includes`, destructuring, spread; Vue `ref`, `reactive`, `computed`, `v-model`, `v-for` | ✅ | [Q&A Day 3](interview-qa.md#day-3--vehicle-inventory) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -82,6 +101,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 2 | Add a `Minivan` vehicle to `vehicles.js` and check that the tile, the count and the dropdown all update | Day 2 | ⬜ |
 | 3 | Change the body-style row to `row-cols-lg-6` once 6 styles exist | Day 2 | ⬜ |
 | 4 | Answer the Day 2 questions in [interview-qa.md](interview-qa.md#day-2--client-homepage) out loud without reading the answers | Day 2 | ⬜ |
+| 5 | Add a **Body style** filter to the inventory page | Day 3 | ⬜ |
+| 6 | Answer the Day 3 questions in [interview-qa.md](interview-qa.md#day-3--vehicle-inventory) out loud | Day 3 | ⬜ |
 
 ---
 
@@ -96,8 +117,10 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 3 | ~~Vehicle images are coloured placeholders~~ | ✅ Fixed: real photos added. The coloured placeholder is still the fallback for vehicles without an `image` | Done (Day 2) |
 | 4 | Favourite hearts reset on page reload and aren't shared | Each card keeps its own `ref` | Pinia day |
 | 5 | Search state lives inside `VehicleSearch`, and the parent reaches in with `defineExpose` | Quick fix before Pinia is taught | Pinia day (search store) |
-| 6 | Hash links all get `aria-current="page"` | The router ignores the hash when deciding which link is current | Inventory page (real routes) |
-| 7 | No tests, no linting | Not covered yet | Testing day |
+| 6 | Hash links on the homepage still get `aria-current="page"` | Those links all point at the `home` route; the hash is ignored | Later, when New/Used become real routes |
+| 7 | Extra inventory cars reuse photos of a similar model | We only downloaded 12 Commons images | Inventory polish / more photos |
+| 8 | Filter choices in the URL are read once, not kept in sync as you type | Enough to deep-link from the homepage; a full query-string sync is later work | Pinia / inventory polish |
+| 9 | No tests, no linting | Not covered yet | Testing day |
 
 ---
 
@@ -107,16 +130,16 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 
 | Day | Topic | Main tasks |
 |---|---|---|
-| 3 | Routing | Inventory page (`/inventory`), vehicle details page (`/vehicles/:id`), active nav links |
-| 4 | Pinia | Vehicles, search and favourites stores; persist favourites in `localStorage` |
-| 5 | Mock API layer | Async service functions with a fake delay; loading, empty and error states |
-| 6 | Forms | Test drive and service appointment forms with validation |
-| 7 | Compare and favourites | Compare up to 3 vehicles side by side; favourites page |
-| 8 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
-| 9 | Admin app | Create `admin/` (port 5182): inventory table and leads |
-| 10 | Auth | Login, route guards, role-based access |
-| 11 | Testing | Vitest unit tests and Playwright end-to-end tests |
-| 12 | Performance and production | Lazy loading, image optimisation, build and deploy |
+| 4 | Vehicle details | Vehicle details page (`/vehicles/:id`), "View details" wiring, related vehicles |
+| 5 | Pinia | Vehicles, search and favourites stores; persist favourites in `localStorage` |
+| 6 | Mock API layer | Async service functions with a fake delay; loading, empty and error states |
+| 7 | Forms | Test drive and service appointment forms with validation |
+| 8 | Compare and favourites | Compare up to 3 vehicles side by side; favourites page |
+| 9 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
+| 10 | Admin app | Create `admin/` (port 5182): inventory table and leads |
+| 11 | Auth | Login, route guards, role-based access |
+| 12 | Testing | Vitest unit tests and Playwright end-to-end tests |
+| 13 | Performance and production | Lazy loading, image optimisation, build and deploy |
 
 ---
 

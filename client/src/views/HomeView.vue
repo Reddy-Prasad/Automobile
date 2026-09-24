@@ -15,7 +15,7 @@ import TradeInSection from '@/components/home/TradeInSection.vue'
 import LocationsSection from '@/components/home/LocationsSection.vue'
 import CtaSection from '@/components/home/CtaSection.vue'
 
-const featuredVehicles = computed(() => vehicles.filter((vehicle) => vehicle.featured))
+const featuredVehicles = computed(() => vehicles.filter((vehicle) => vehicle.featured).slice(0, 4))
 const newVehicles = computed(() => vehicles.filter((vehicle) => vehicle.condition === 'new').slice(0, 4))
 const usedVehicles = computed(() => vehicles.filter((vehicle) => vehicle.condition !== 'new').slice(0, 4))
 
@@ -83,7 +83,13 @@ function clearSearch() {
     title="Featured vehicles"
     subtitle="Popular picks our customers are test-driving this week."
     :vehicles="featuredVehicles"
-  />
+  >
+    <template #actions>
+      <RouterLink class="btn btn-outline-primary btn-sm" :to="{ name: 'vehicles' }">
+        Browse all inventory
+      </RouterLink>
+    </template>
+  </VehicleShowcase>
   <BodyStylesSection :vehicles="vehicles" @select="onBodyStyleSelect" />
   <VehicleShowcase
     id="new-vehicles"
@@ -92,14 +98,32 @@ function clearSearch() {
     subtitle="2026 models with full factory warranty."
     :vehicles="newVehicles"
     muted
-  />
+  >
+    <template #actions>
+      <RouterLink
+        class="btn btn-outline-primary btn-sm"
+        :to="{ name: 'vehicles', query: { condition: 'new' } }"
+      >
+        Shop new vehicles
+      </RouterLink>
+    </template>
+  </VehicleShowcase>
   <VehicleShowcase
     id="used-vehicles"
     eyebrow="Pre-owned"
     title="Used & certified vehicles"
     subtitle="Every vehicle inspected, with a free vehicle history report."
     :vehicles="usedVehicles"
-  />
+  >
+    <template #actions>
+      <RouterLink
+        class="btn btn-outline-primary btn-sm"
+        :to="{ name: 'vehicles', query: { condition: 'used' } }"
+      >
+        Shop used vehicles
+      </RouterLink>
+    </template>
+  </VehicleShowcase>
 
   <OffersSection />
   <FinanceSection />
