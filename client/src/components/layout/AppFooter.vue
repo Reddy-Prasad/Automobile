@@ -40,6 +40,14 @@ const currentYear = new Date().getFullYear()
                 Inventory
               </RouterLink>
             </li>
+            <li class="mb-1">
+              <RouterLink
+                class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"
+                :to="{ name: 'requests' }"
+              >
+                My requests
+              </RouterLink>
+            </li>
             <li v-for="link in mainNav" :key="link.hash" class="mb-1">
               <RouterLink
                 class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"

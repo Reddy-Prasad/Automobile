@@ -1,6 +1,7 @@
 <script setup>
-import { computed, nextTick, ref, useTemplateRef } from 'vue'
-import { vehicles } from '@/data/vehicles'
+import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue'
+import ResourceState from '@/components/common/ResourceState.vue'
+import { useVehicles } from '@/composables/useVehicles'
 import { filterVehicles } from '@/utils/vehicles'
 import { formatCurrency } from '@/utils/format'
 
@@ -15,14 +16,22 @@ import TradeInSection from '@/components/home/TradeInSection.vue'
 import LocationsSection from '@/components/home/LocationsSection.vue'
 import CtaSection from '@/components/home/CtaSection.vue'
 
-const featuredVehicles = computed(() => vehicles.filter((vehicle) => vehicle.featured).slice(0, 4))
-const newVehicles = computed(() => vehicles.filter((vehicle) => vehicle.condition === 'new').slice(0, 4))
-const usedVehicles = computed(() => vehicles.filter((vehicle) => vehicle.condition !== 'new').slice(0, 4))
+const { vehicles, status, error, load, retry } = useVehicles()
+
+const featuredVehicles = computed(() =>
+  vehicles.value.filter((vehicle) => vehicle.featured).slice(0, 4),
+)
+const newVehicles = computed(() =>
+  vehicles.value.filter((vehicle) => vehicle.condition === 'new').slice(0, 4),
+)
+const usedVehicles = computed(() =>
+  vehicles.value.filter((vehicle) => vehicle.condition !== 'new').slice(0, 4),
+)
 
 const vehicleSearch = useTemplateRef('vehicleSearch')
 const searchCriteria = ref(null)
 const searchResults = computed(() =>
-  searchCriteria.value ? filterVehicles(vehicles, searchCriteria.value) : [],
+  searchCriteria.value ? filterVehicles(vehicles.value, searchCriteria.value) : [],
 )
 
 const conditionSummary = { all: 'Any condition', new: 'New', used: 'Used & CPO' }
@@ -54,12 +63,17 @@ function clearSearch() {
   searchCriteria.value = null
   vehicleSearch.value.reset()
 }
+
+onMounted(() => {
+  load()
+})
 </script>
 
 <template>
   <h1 class="visually-hidden">AutoDrive — new, used and certified vehicles in Texas</h1>
 
   <HeroCarousel />
+  <ResourceState :status="status" :error="error" @retry="retry">
   <VehicleSearch ref="vehicleSearch" :vehicles="vehicles" @search="onSearch" />
 
   <VehicleShowcase
@@ -124,6 +138,7 @@ function clearSearch() {
       </RouterLink>
     </template>
   </VehicleShowcase>
+  </ResourceState>
 
   <OffersSection />
   <FinanceSection />

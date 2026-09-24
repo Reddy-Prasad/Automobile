@@ -1,20 +1,15 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ResourceState from '@/components/common/ResourceState.vue'
 import VehicleActions from '@/components/vehicles/VehicleActions.vue'
 import VehicleCard from '@/components/vehicles/VehicleCard.vue'
 import VehicleGallery from '@/components/vehicles/VehicleGallery.vue'
-import { dealer, locations } from '@/data/dealer'
-import { conditionLabels, vehicles } from '@/data/vehicles'
+import { useFinanceApplication } from '@/composables/useFinanceApplication'
+import { useTestDriveRequest } from '@/composables/useTestDriveRequest'
+import { useVehicle } from '@/composables/useVehicle'
+import { conditionLabels } from '@/data/vehicles'
 import { formatCurrency, formatMileage } from '@/utils/format'
-import {
-  findVehicleById,
-  relatedVehicles,
-  vehicleFeatures,
-  vehicleGallery,
-  vehicleLocation,
-  vehicleTitle,
-} from '@/utils/vehicles'
 
 const props = defineProps({
   id: { type: [String, Number], required: true },
@@ -23,37 +18,36 @@ const props = defineProps({
 const route = useRoute()
 const router = useRouter()
 
-const vehicle = computed(() => findVehicleById(vehicles, props.id))
-const title = computed(() => (vehicle.value ? vehicleTitle(vehicle.value) : ''))
-const location = computed(() =>
-  vehicle.value ? vehicleLocation(vehicle.value, locations) : null,
-)
-const features = computed(() => (vehicle.value ? vehicleFeatures(vehicle.value) : []))
-const gallery = computed(() => (vehicle.value ? vehicleGallery(vehicle.value) : []))
-const similar = computed(() =>
-  vehicle.value ? relatedVehicles(vehicles, vehicle.value) : [],
-)
+const {
+  vehicle,
+  similar,
+  title,
+  features,
+  gallery,
+  location,
+  dealer,
+  status,
+  error,
+  retry,
+  saveVehicle,
+} = useVehicle(() => props.id)
+
+const drive = useTestDriveRequest()
+const finance = useFinanceApplication()
+
+const isCompared = ref(false)
+const compareNote = ref('')
+const panel = ref('')
+
 const savings = computed(() => {
   if (!vehicle.value?.msrp) return 0
   return vehicle.value.msrp - vehicle.value.price
 })
 
-const isFavorite = ref(false)
-const isCompared = ref(false)
-const compareNote = ref('')
-const panel = ref('')
-const driveSubmitted = ref(false)
-
-const driveForm = reactive({
-  name: '',
-  phone: '',
-  day: '',
-})
-
 const monthlyEstimate = computed(() => {
   if (!vehicle.value) return 0
-  const principal = Math.max(vehicle.value.price - 5000, 0)
-  const months = 60
+  const principal = Math.max(vehicle.value.price - finance.form.downPayment, 0)
+  const months = finance.form.termMonths
   const monthlyRate = 6.9 / 100 / 12
   if (principal === 0) return 0
   return (principal * monthlyRate) / (1 - (1 + monthlyRate) ** -months)
@@ -62,23 +56,28 @@ const monthlyEstimate = computed(() => {
 watch(
   () => props.id,
   () => {
-    isFavorite.value = false
     isCompared.value = false
     compareNote.value = ''
-    driveSubmitted.value = false
-    Object.assign(driveForm, { name: '', phone: '', day: '' })
+    drive.reset()
+    finance.reset()
     panel.value = typeof route.query.action === 'string' ? route.query.action : ''
-    document.title = vehicle.value ? `${title.value} | AutoDrive` : 'Vehicle not found | AutoDrive'
   },
   { immediate: true },
+)
+
+watch(
+  [vehicle, title],
+  () => {
+    document.title = vehicle.value ? `${title.value} | AutoDrive` : 'Vehicle | AutoDrive'
+  },
 )
 
 function openPanel(name) {
   panel.value = panel.value === name ? '' : name
 }
 
-function onFavorite() {
-  isFavorite.value = !isFavorite.value
+async function onFavorite() {
+  await saveVehicle({ saved: !vehicle.value.saved })
 }
 
 function onCompare() {
@@ -104,8 +103,20 @@ function onTradeIn() {
   })
 }
 
-function submitDrive() {
-  driveSubmitted.value = true
+async function submitDrive() {
+  try {
+    await drive.submit(props.id)
+  } catch {
+    // status/error live on the composable
+  }
+}
+
+async function submitFinance() {
+  try {
+    await finance.submit(vehicle.value)
+  } catch {
+    // status/error live on the composable
+  }
 }
 
 function onGallerySelect(item) {
@@ -114,15 +125,20 @@ function onGallerySelect(item) {
 </script>
 
 <template>
-  <section v-if="!vehicle" class="container py-5 text-center">
-    <h1 class="h3 fw-bold">Vehicle not found</h1>
-    <p class="text-body-secondary">
-      Stock #{{ id }} is not in the mock inventory. IDs run from 1 to {{ vehicles.length }}.
-    </p>
-    <RouterLink class="btn btn-primary" :to="{ name: 'vehicles' }">Back to inventory</RouterLink>
-  </section>
-
-  <article v-else>
+  <section class="container py-5">
+    <ResourceState
+      :status="status"
+      :error="error"
+      empty-title="Vehicle not found"
+      empty-text="That id is not in the mock API. Try 1–24."
+      @retry="retry"
+    >
+      <template #empty>
+        <RouterLink class="btn btn-primary mt-3" :to="{ name: 'vehicles' }">
+          Back to inventory
+        </RouterLink>
+      </template>
+  <article v-if="vehicle">
     <div class="bg-body-tertiary border-bottom py-3">
       <div class="container">
         <nav aria-label="breadcrumb">
@@ -172,7 +188,7 @@ function onGallerySelect(item) {
           </ul>
 
           <VehicleActions
-            :is-favorite="isFavorite"
+            :is-favorite="Boolean(vehicle.saved)"
             :is-compared="isCompared"
             :test-drive-disabled="vehicle.availability === 'RESERVED'"
             @favorite="onFavorite"
@@ -191,33 +207,58 @@ function onGallerySelect(item) {
             <div class="card-body">
               <h2 class="h6 fw-bold">Estimated payment</h2>
               <p class="display-6 fw-bold mb-1">{{ formatCurrency(monthlyEstimate) }}/mo</p>
-              <p class="small text-body-secondary mb-0">
-                $5,000 down · 60 months · 6.9% APR. Estimate only — tax and fees extra.
+              <p v-if="finance.status === 'success'" class="text-success">
+                Application #{{ finance.record.id }} submitted.
               </p>
+              <p v-else-if="finance.status === 'error'" class="text-danger small">
+                {{ finance.error.message }}
+              </p>
+              <form v-else class="row g-3" @submit.prevent="submitFinance">
+                <div class="col-12">
+                  <label for="finance-name" class="form-label small">Name</label>
+                  <input id="finance-name" v-model.trim="finance.form.name" class="form-control" required />
+                </div>
+                <div class="col-12">
+                  <label for="finance-email" class="form-label small">Email</label>
+                  <input id="finance-email" v-model.trim="finance.form.email" type="email" class="form-control" />
+                </div>
+                <div class="col-12">
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    :disabled="finance.status === 'loading'"
+                  >
+                    {{ finance.status === 'loading' ? 'Sending…' : 'Submit application (POST)' }}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
 
           <div v-if="panel === 'testdrive'" id="testdrive-panel" class="card border-0 shadow-sm mt-4">
             <div class="card-body">
               <h2 class="h6 fw-bold">Request a test drive</h2>
-              <p v-if="driveSubmitted" class="text-success mb-0">
-                Thanks {{ driveForm.name }}. {{ location.name }} will call you to confirm.
+              <p v-if="drive.status === 'success'" class="text-success mb-0">
+                Thanks {{ drive.form.name }}. Request #{{ drive.record.id }} is in My requests.
               </p>
+              <p v-else-if="drive.status === 'error'" class="text-danger small">{{ drive.error.message }}</p>
               <form v-else class="row g-3" @submit.prevent="submitDrive">
                 <div class="col-12">
                   <label for="drive-name" class="form-label small">Name</label>
-                  <input id="drive-name" v-model.trim="driveForm.name" class="form-control" required />
+                  <input id="drive-name" v-model.trim="drive.form.name" class="form-control" required />
                 </div>
                 <div class="col-md-6">
                   <label for="drive-phone" class="form-label small">Phone</label>
-                  <input id="drive-phone" v-model.trim="driveForm.phone" class="form-control" required />
+                  <input id="drive-phone" v-model.trim="drive.form.phone" class="form-control" required />
                 </div>
                 <div class="col-md-6">
                   <label for="drive-day" class="form-label small">Preferred day</label>
-                  <input id="drive-day" v-model="driveForm.day" type="date" class="form-control" required />
+                  <input id="drive-day" v-model="drive.form.day" type="date" class="form-control" required />
                 </div>
                 <div class="col-12">
-                  <button type="submit" class="btn btn-primary">Send request</button>
+                  <button type="submit" class="btn btn-primary" :disabled="drive.status === 'loading'">
+                    {{ drive.status === 'loading' ? 'Sending…' : 'Send request (POST)' }}
+                  </button>
                 </div>
               </form>
             </div>
@@ -340,4 +381,6 @@ function onGallerySelect(item) {
       </section>
     </div>
   </article>
+    </ResourceState>
+  </section>
 </template>

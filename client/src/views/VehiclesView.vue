@@ -1,11 +1,15 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import ResourceState from '@/components/common/ResourceState.vue'
 import SectionHeading from '@/components/common/SectionHeading.vue'
 import VehicleCard from '@/components/vehicles/VehicleCard.vue'
-import { conditionLabels, vehicles } from '@/data/vehicles'
+import { useVehicles } from '@/composables/useVehicles'
+import { conditionLabels } from '@/data/vehicles'
 import { formatCurrency } from '@/utils/format'
 import { filterInventory, paginate, sortInventory, uniqueValues } from '@/utils/vehicles'
+
+const { vehicles, status, error, load, retry, simulateError } = useVehicles()
 
 const pageSize = 6
 const route = useRoute()
@@ -47,13 +51,13 @@ const filters = reactive(filtersFromQuery(route.query))
 const sortBy = ref(typeof route.query.sort === 'string' ? route.query.sort : 'featured')
 const currentPage = ref(1)
 
-const makes = uniqueValues(vehicles, 'make')
-const fuelTypes = uniqueValues(vehicles, 'fuelType')
-const transmissions = uniqueValues(vehicles, 'transmission')
-const years = uniqueValues(vehicles, 'year').sort((a, b) => b - a)
+const makes = computed(() => uniqueValues(vehicles.value, 'make'))
+const fuelTypes = computed(() => uniqueValues(vehicles.value, 'fuelType'))
+const transmissions = computed(() => uniqueValues(vehicles.value, 'transmission'))
+const years = computed(() => uniqueValues(vehicles.value, 'year').sort((a, b) => b - a))
 
 const filteredVehicles = computed(() => {
-  const matches = filterInventory(vehicles, filters)
+  const matches = filterInventory(vehicles.value, filters)
   return sortInventory(matches, sortBy.value)
 })
 
@@ -100,6 +104,10 @@ function resetFilters() {
   Object.assign(filters, emptyFilters())
   sortBy.value = 'featured'
 }
+
+onMounted(() => {
+  load()
+})
 </script>
 
 <template>
@@ -108,8 +116,13 @@ function resetFilters() {
       <SectionHeading
         eyebrow="Vehicle inventory"
         title="Find your next vehicle"
-        subtitle="Search, filter and sort 24 new, used and certified vehicles. No backend — this page reads local mock data."
+        subtitle="The list comes from GET /vehicles through the service layer. Filters still run in the browser after the response arrives."
       />
+      <div class="mb-3">
+        <button type="button" class="btn btn-outline-danger btn-sm" @click="simulateError">
+          Simulate API error
+        </button>
+      </div>
 
       <form class="card border-0 shadow-sm" @submit.prevent>
         <div class="card-body p-3 p-lg-4">
@@ -189,6 +202,13 @@ function resetFilters() {
 
   <section class="py-5">
     <div class="container">
+      <ResourceState
+        :status="status"
+        :error="error"
+        empty-title="The inventory API returned no vehicles"
+        empty-text="Retry the request, or check the mock database seed."
+        @retry="retry"
+      >
       <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
         <div>
           <h2 class="h4 fw-bold mb-1">
@@ -277,6 +297,7 @@ function resetFilters() {
           </li>
         </ul>
       </nav>
+      </ResourceState>
     </div>
   </section>
 </template>

@@ -15,6 +15,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 2 | Client homepage | ✅ Done | `day-02` |
 | 3 | Client vehicle inventory | ✅ Done | — |
 | 4 | Vehicle details | ✅ Done | — |
+| 5 | Mock API and service layer | ✅ Done | — |
 
 ---
 
@@ -110,6 +111,23 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 5 — Mock API and service layer
+
+**Goal:** a REST-shaped mock API behind services and composables, so views never talk to the mock (or a future .NET API) directly.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | HTTP client with the same `request()` path for mock and real `fetch` | ✅ | `api/http.js` |
+| 2 | In-memory mock router: GET, POST, PUT, PATCH, DELETE + delay + forced errors | ✅ | `api/mock/` |
+| 3 | Services: vehicles, customers, test drives, finance | ✅ | `services/` |
+| 4 | Composables own INITIAL / LOADING / SUCCESS / EMPTY / ERROR / RETRY | ✅ | `composables/` |
+| 5 | Inventory, home vehicle blocks and details load through `useVehicles` / `useVehicle` | ✅ | `HomeView`, `VehiclesView`, `VehicleDetailsView` |
+| 6 | Test-drive POST + finance POST; `/requests` for PATCH / PUT / DELETE | ✅ | details forms, `RequestsView.vue` |
+| 7 | Request log in the footer and `console.info('[API] …')` | ✅ | `ApiLogBar.vue`, `http.js` |
+| 8 | Learn: fetch, Promise, async/await, try/catch, JSON, error handling | ✅ | [Q&A Day 5](interview-qa.md#day-5--mock-api-and-service-layer) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -124,6 +142,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 6 | Answer the Day 3 questions in [interview-qa.md](interview-qa.md#day-3--vehicle-inventory) out loud | Day 3 | ⬜ |
 | 7 | Add Previous / Next vehicle links on the details page | Day 4 | ⬜ |
 | 8 | Answer the Day 4 questions in [interview-qa.md](interview-qa.md#day-4--vehicle-details) out loud | Day 4 | ⬜ |
+| 9 | Add `offerService.js` + `useOffers()` and load homepage offers through the API | Day 5 | ⬜ |
+| 10 | Answer the Day 5 questions in [interview-qa.md](interview-qa.md#day-5--mock-api-and-service-layer) out loud | Day 5 | ⬜ |
 
 ---
 
@@ -142,6 +162,8 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 7 | Extra inventory cars reuse photos of a similar model | We only downloaded 12 Commons images | Inventory polish / more photos |
 | 8 | Filter choices in the URL are read once, not kept in sync as you type | Enough to deep-link from the homepage; a full query-string sync is later work | Pinia / inventory polish |
 | 9 | No tests, no linting | Not covered yet | Testing day |
+| 10 | Mock data lives in memory; refresh of the tab keeps it, restarting Vite resets POST/PATCH/DELETE | There is no real database | .NET API day |
+| 11 | Homepage offers, locations and trade-in still read local modules | Only vehicle/request screens were moved to the service layer | Offers exercise / later days |
 
 ---
 
@@ -151,8 +173,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 
 | Day | Topic | Main tasks |
 |---|---|---|
-| 5 | Pinia | Vehicles, search and favourites stores; persist favourites in `localStorage` |
-| 6 | Mock API layer | Async service functions with a fake delay; loading, empty and error states |
+| 6 | Pinia | Vehicles, search and favourites stores; persist favourites in `localStorage` |
 | 7 | Forms | Test drive and service appointment forms with validation |
 | 8 | Compare and favourites | Compare up to 3 vehicles side by side; favourites page |
 | 9 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |

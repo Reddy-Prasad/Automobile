@@ -1,6 +1,7 @@
 <script setup>
-import AppHeader from '@/components/layout/AppHeader.vue'
+import ApiLogBar from '@/components/common/ApiLogBar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
+import AppHeader from '@/components/layout/AppHeader.vue'
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import AppFooter from '@/components/layout/AppFooter.vue'
       <RouterView />
     </main>
 
+    <ApiLogBar />
     <AppFooter />
   </div>
 </template>

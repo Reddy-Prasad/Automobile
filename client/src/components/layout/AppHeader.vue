@@ -66,6 +66,11 @@ watch(
                 Inventory
               </RouterLink>
             </li>
+            <li class="nav-item">
+              <RouterLink class="nav-link" active-class="active" :to="{ name: 'requests' }">
+                My requests
+              </RouterLink>
+            </li>
             <li v-for="link in mainNav" :key="link.hash" class="nav-item">
               <RouterLink class="nav-link" :to="{ name: 'home', hash: link.hash }">
                 {{ link.label }}

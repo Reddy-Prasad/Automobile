@@ -70,6 +70,19 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 9. Params vs query: `/vehicles/1` vs `/vehicles/1?action=finance`?
 10. Why `@click.stop` on the card favourite button?
 
+**[Day 5 — Mock API and service layer](#day-5--mock-api-and-service-layer)**
+
+1. Why Component → Composable → Service → API?
+2. What does `fetch` return, and why do we still wrap it?
+3. Promise vs async/await?
+4. Why `try/catch` around API calls?
+5. How do you turn a `Response` into data?
+6. How do you handle 404 vs 500?
+7. What are INITIAL, LOADING, SUCCESS, EMPTY, ERROR, RETRY?
+8. GET vs POST vs PUT vs PATCH vs DELETE?
+9. How will this connect to a real .NET API?
+10. Why must the Vue component not know about the mock?
+
 ---
 
 ## Day 1 — Project foundation
@@ -424,3 +437,81 @@ A `computed` / `watch` on `props.id` (or `() => route.params.id`) updates the ve
 ### 10. Why `@click.stop` on the card favourite button?
 
 The card uses Bootstrap's `stretched-link`, so a click anywhere on the card follows **View details**. Without `.stop`, clicking the heart would also navigate. `.stop` calls `stopPropagation()` so only the favourite `ref` toggles.
+
+## Day 5 — Mock API and service layer
+
+### 1. Why Component → Composable → Service → API?
+
+Each layer has one job:
+
+- **Component** — render status and bind buttons. It does not know URLs.
+- **Composable** — `useVehicles`, `useVehicle`. Owns status (`loading`, `error`) and calls the service.
+- **Service** — `vehicleService.listVehicles()`. Knows the path and HTTP method.
+- **API client** — `request()` / `fetch`. Knows headers, JSON, and whether we are on the mock or .NET.
+
+If a component imported `handleMockRequest`, swapping to .NET would mean editing every screen.
+
+### 2. What does `fetch` return, and why do we still wrap it?
+
+`fetch` returns a **Promise** that resolves to a `Response`. It does **not** throw on 404 or 500. You must check `response.ok` and then `response.json()`.
+
+`request()` in `api/http.js` does that once. Services call `request('/vehicles')` and either get data or an `ApiError`.
+
+### 3. Promise vs async/await?
+
+A Promise is an object for a value that will exist later. `async/await` is syntax on top of Promises.
+
+```js
+const vehicle = await getVehicle(1)
+```
+
+is the same idea as `getVehicle(1).then(...)`. `await` can only be used inside `async` functions. AutoDrive composables are `async function load()`.
+
+### 4. Why `try/catch` around API calls?
+
+`await request()` throws `ApiError` when the response is not ok. Without `try/catch`, an unhandled rejection appears in the console and the UI stays on "loading" forever. The composable catches, sets `status = 'error'`, and the view shows **Retry**.
+
+### 5. How do you turn a `Response` into data?
+
+```js
+const payload = await response.json()
+```
+
+The body is a string of JSON. `.json()` parses it into objects. 204 No Content has no body — `request()` returns `null` for DELETE.
+
+### 6. How do you handle 404 vs 500?
+
+Both are `!response.ok`. We read `payload.message` and throw `ApiError` with the **status code**. The UI can say "not found" for 404 and "try again" for 500. **Simulate API error** on inventory sends a 500; `/vehicles/101` is a 404.
+
+### 7. What are INITIAL, LOADING, SUCCESS, EMPTY, ERROR, RETRY?
+
+| Status | Meaning |
+|---|---|
+| `initial` | The composable exists; no request yet |
+| `loading` | A request is in flight (spinner) |
+| `success` | We have data to render |
+| `empty` | The request worked but the list is `[]` |
+| `error` | The request failed |
+| `retry` | Not a status — it is `load()` called again |
+
+Empty and success are both "the API worked". Mixing them with error is a common bug.
+
+### 8. GET vs POST vs PUT vs PATCH vs DELETE?
+
+| Method | AutoDrive example |
+|---|---|
+| GET | `GET /vehicles`, `GET /vehicles/1` — read |
+| POST | Test drive and finance **create** |
+| PUT | Replace a finance application (48-month switch) |
+| PATCH | Confirm a test drive; save a vehicle favourite |
+| DELETE | Cancel a test drive; withdraw an application |
+
+PUT sends a full replacement. PATCH sends only the fields that change.
+
+### 9. How will this connect to a real .NET API?
+
+Set `VITE_USE_MOCK=false` and `VITE_API_BASE_URL=https://localhost:5001/api` in `.env`. `request()` then calls `fetch(baseUrl + path)` with the same JSON body. Controllers on the .NET side should expose the same routes: `GET /vehicles`, `POST /test-drives`, and so on. **No Vue component changes.**
+
+### 10. Why must the Vue component not know about the mock?
+
+The mock is a stand-in for the network. If `VehiclesView` imported `db.vehicles`, you would have to rewrite the view for .NET, and you could not show loading or retry. The view only knows `status`, `vehicles`, and `retry()`.

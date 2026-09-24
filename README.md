@@ -10,7 +10,7 @@ The platform is planned as three separate Vue applications that share the same s
 | `cms/` | Content management (offers, banners, pages) | Planned | http://localhost:5181 |
 | `admin/` | Dealer/admin dashboard (inventory, leads) | Planned | http://localhost:5182 |
 
-There is no backend yet. Data comes from local mock modules in `client/src/data/`.
+There is no real backend yet. Views talk to services through a mock REST layer in `client/src/api/`, seeded from `client/src/data/`. Set `VITE_USE_MOCK=false` later to point the same services at a .NET API.
 
 ## Tech stack
 
@@ -43,14 +43,17 @@ client/
     ├── App.vue                Root component → MainLayout
     ├── router/index.js        Routes, 404 catch-all, smooth scroll to #hash links
     ├── layouts/MainLayout.vue Header + <RouterView /> + footer
-    ├── data/                  Mock data: vehicles, offers, dealer/locations, navigation, image credits
+    ├── api/                   HTTP client, request log, in-memory mock REST router
+    ├── services/              vehicle, customer, testDrive, finance
+    ├── composables/           useVehicles, useVehicle, request helpers
+    ├── data/                  Seed data for the mock DB and UI copy
     ├── utils/                 Formatters (currency, mileage, date) and vehicle helpers
     ├── components/
     │   ├── common/            SectionHeading
     │   ├── vehicles/          VehicleCard, VehicleGallery, VehicleActions
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 HomeView, VehiclesView, VehicleDetailsView, CreditsView, NotFoundView
+    └── views/                 HomeView, VehiclesView, VehicleDetailsView, RequestsView, CreditsView, NotFoundView
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
@@ -91,6 +94,15 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Actions: favorite, compare, payment estimate, test-drive request, trade-in (jumps to the homepage form)
 - Concepts: dynamic routes, params, query, `useRoute`, `useRouter`, `router.push`, route `props: true`, props vs emits
 - Exercise: add Previous / Next vehicle links on the details page
+
+### Day 5 — Mock API and service layer
+
+- Architecture: Vue view → composable → service → `request()` → mock REST (or later `fetch` to .NET)
+- GET / POST / PUT / PATCH / DELETE with a visible delay, loading / empty / error / retry
+- Inventory **Simulate API error**; details forms POST test drives and finance apps; `/requests` confirms, updates and deletes
+- Footer API log + `console.info('[API] GET /vehicles → 200')`
+- Switch later with `VITE_USE_MOCK=false` and `VITE_API_BASE_URL`
+- Exercise: put homepage offers behind `offerService` + `useOffers()`
 
 ## Learning notes
 
