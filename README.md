@@ -54,7 +54,7 @@ client/
     │   ├── vehicles/          VehicleCard, VehicleGallery, VehicleActions
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 Home, inventory, details, saved, compare, requests, credits, 404
+    └── views/                 Home, inventory, details, finance, saved, compare, requests, credits, 404
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
@@ -112,6 +112,14 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Hearts and compare are shared; `/saved` and `/compare`; header counts; demo Sign in
 - Favorites persist in `localStorage`; compare and auth use `sessionStorage`
 - Exercise: build a `recentStore` for the last 5 opened vehicles
+
+### Day 7 — Finance calculator and application
+
+- `/finance`: computed EMI (loan amount, monthly payment, total interest, total payment)
+- Validated application: name, email, phone, employment, income, loan, tenure → POST
+- Loading, success, API error, Retry, Simulate API error
+- Form state stays local. Header **Finance** goes to the page, not `#finance`
+- Exercise: debt-to-income % (EMI ÷ income) with a warning over 40%
 
 ## Learning notes
 

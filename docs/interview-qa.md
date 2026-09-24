@@ -97,6 +97,17 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 9. How do favorites stay in sync across pages?
 10. Pinia vs the Day 5 request status machine?
 
+**[Day 7 — Finance calculator and application](#day-7--finance-calculator-and-application)**
+
+1. Why is EMI a `computed` and not a method or an API call?
+2. What does `v-model.number` do on the calculator?
+3. Why validate in Vue before `POST`?
+4. Walk through Submit → Vue → Service → Mock API → Response → UI.
+5. Why is the finance form not in Pinia?
+6. `try/catch` on submit — what happens without it?
+7. How do you show field errors vs an API error?
+8. What is the EMI formula AutoDrive uses?
+
 ---
 
 ## Day 1 — Project foundation
@@ -590,3 +601,42 @@ If only one screen needs it, keep it local. Filters, sort, page number, test-dri
 ### 10. Pinia vs the Day 5 request status machine?
 
 Day 5 status (`loading` / `error`) answers “what is **this request** doing?” Pinia answers “what does the **app** remember?” `vehicleStore` happens to store both: the cached list (app memory) and `listStatus` (that request). Favorites do not need a loading spinner to toggle an id.
+
+## Day 7 — Finance calculator and application
+
+### 1. Why is EMI a `computed` and not a method or an API call?
+
+Price, down payment, APR and tenure are already on the page. EMI is just math. A `computed` recalculates when those refs change. An API call would add loading for a formula you can do in the browser.
+
+### 2. What does `v-model.number` do on the calculator?
+
+`v-model` on an `<input type="number">` is still a **string** unless you add `.number`. The modifier runs `Number()` so `35000 + 1` is `35001`, not `"350001"`.
+
+### 3. Why validate in Vue before `POST`?
+
+A 400 from the API is slower and vaguer. Client checks catch empty name or a bad email immediately. The mock still rejects a missing name or loan amount — that is the server's job too.
+
+### 4. Walk through Submit → Vue → Service → Mock API → Response → UI.
+
+Submit calls `onSubmit` → `useFinanceApply.submit()` validates → `createFinanceApplication()` → `request('POST', /finance-applications)` → mock delay + 201 JSON (or 500) → composable sets `success` or `error` → the view shows the alert. The `.vue` file never calls `handleMockRequest`.
+
+### 5. Why is the finance form not in Pinia?
+
+Only this page needs the draft. Header and inventory do not. Day 6 rule: if one screen owns it, keep it local.
+
+### 6. `try/catch` on submit — what happens without it?
+
+`await request()` throws `ApiError` on 500. Without `catch`, the UI can stay on **loading** and you get an unhandled rejection. The composable catches, sets `status = 'error'`, and shows Retry.
+
+### 7. How do you show field errors vs an API error?
+
+Field errors are `errors.name` from `validateFinanceApplication` — red text under the input. An API error is `status === 'error'` and `error.message` after the network call. Validation failure never hits the API.
+
+### 8. What is the EMI formula AutoDrive uses?
+
+Loan amount `P` = price − down. Monthly rate `r` = APR / 100 / 12. Tenure `n` months.
+
+If `r === 0`: EMI = `P / n`.  
+Else: EMI = `P * r / (1 - (1 + r) ** -n)`.
+
+Total payment = EMI × n. Total interest = total payment − P.

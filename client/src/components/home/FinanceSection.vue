@@ -1,29 +1,18 @@
 <script setup>
-import { computed, ref } from 'vue'
-import { formatCurrency } from '@/utils/format'
+import { useLoanCalculator } from '@/composables/useLoanCalculator'
+import { formatCurrency, formatCurrencyPrecise } from '@/utils/format'
 
-const termOptions = [36, 48, 60, 72, 84]
-
-const vehiclePrice = ref(35000)
-const downPayment = ref(5000)
-const termMonths = ref(60)
-const apr = ref(6.9)
-
-const amountFinanced = computed(() => Math.max(vehiclePrice.value - downPayment.value, 0))
-
-const monthlyPayment = computed(() => {
-  const principal = amountFinanced.value
-  const months = termMonths.value
-  const monthlyRate = apr.value / 100 / 12
-
-  if (principal === 0) return 0
-  if (monthlyRate === 0) return principal / months
-  return (principal * monthlyRate) / (1 - (1 + monthlyRate) ** -months)
-})
-
-const totalInterest = computed(() =>
-  Math.max(monthlyPayment.value * termMonths.value - amountFinanced.value, 0),
-)
+const {
+  TERM_OPTIONS,
+  vehiclePrice,
+  downPayment,
+  termMonths,
+  apr,
+  loanAmount,
+  monthlyEmi,
+  totalInterest,
+  totalPayment,
+} = useLoanCalculator()
 
 const benefits = [
   'Pre-qualify in minutes with no impact to your credit score',
@@ -49,7 +38,7 @@ const benefits = [
               <span>{{ benefit }}</span>
             </li>
           </ul>
-          <RouterLink class="btn btn-primary btn-lg" :to="{ name: 'home', hash: '#contact' }">
+          <RouterLink class="btn btn-primary btn-lg" :to="{ name: 'finance' }">
             Get pre-approved
           </RouterLink>
         </div>
@@ -99,7 +88,7 @@ const benefits = [
                 <div class="col-sm-6">
                   <label for="finance-term" class="form-label small fw-semibold">Term</label>
                   <select id="finance-term" v-model.number="termMonths" class="form-select">
-                    <option v-for="term in termOptions" :key="term" :value="term">
+                    <option v-for="term in TERM_OPTIONS" :key="term" :value="term">
                       {{ term }} months
                     </option>
                   </select>
@@ -128,16 +117,20 @@ const benefits = [
                 <div class="row g-3 align-items-center text-center text-sm-start">
                   <div class="col-sm-6">
                     <p class="small mb-1">Estimated monthly payment</p>
-                    <p class="display-6 fw-bold mb-0">{{ formatCurrency(monthlyPayment) }}</p>
+                    <p class="display-6 fw-bold mb-0">{{ formatCurrencyPrecise(monthlyEmi) }}</p>
                   </div>
                   <div class="col-sm-6 small">
                     <div class="d-flex justify-content-between">
-                      <span>Amount financed</span>
-                      <span>{{ formatCurrency(amountFinanced) }}</span>
+                      <span>Loan amount</span>
+                      <span>{{ formatCurrency(loanAmount) }}</span>
                     </div>
                     <div class="d-flex justify-content-between">
                       <span>Total interest</span>
                       <span>{{ formatCurrency(totalInterest) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span>Total payment</span>
+                      <span>{{ formatCurrency(totalPayment) }}</span>
                     </div>
                   </div>
                 </div>

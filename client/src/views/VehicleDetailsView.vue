@@ -234,6 +234,19 @@ function onGallerySelect(item) {
                   >
                     {{ finance.status === 'loading' ? 'Sending…' : 'Submit application (POST)' }}
                   </button>
+                  <RouterLink
+                    class="btn btn-outline-primary"
+                    :to="{
+                      name: 'finance',
+                      query: {
+                        price: String(vehicle.price),
+                        down: String(finance.form.downPayment),
+                        term: String(finance.form.termMonths),
+                      },
+                    }"
+                  >
+                    Full finance application
+                  </RouterLink>
                 </div>
               </form>
             </div>

@@ -17,6 +17,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 4 | Vehicle details | ✅ Done | — |
 | 5 | Mock API and service layer | ✅ Done | — |
 | 6 | Pinia and state management | ✅ Done | — |
+| 7 | Finance calculator and application | ✅ Done | — |
 
 ---
 
@@ -146,6 +147,22 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 7 — Finance calculator and application
+
+**Goal:** a `/finance` page where EMI is a `computed` and the application is validated local form state + POST.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Route `/finance` | ✅ | `router/index.js` |
+| 2 | Calculator: price, down, loan, APR, tenure, EMI, total interest, total payment | ✅ | `utils/finance.js`, `useLoanCalculator.js` |
+| 3 | Application: name, email, phone, employment, income, loan, tenure | ✅ | `FinanceView.vue` |
+| 4 | Client validation + error messages before the API | ✅ | `validateFinanceApplication` |
+| 5 | Loading / success / API error / retry + Simulate API error | ✅ | `useFinanceApply.js` |
+| 6 | Mock `POST /finance-applications` without requiring a vehicle | ✅ | `api/mock/router.js` |
+| 7 | Learn: form state, computed, validation, async submit, try/catch | ✅ | [Q&A Day 7](interview-qa.md#day-7--finance-calculator-and-application) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -164,6 +181,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 10 | Answer the Day 5 questions in [interview-qa.md](interview-qa.md#day-5--mock-api-and-service-layer) out loud | Day 5 | ⬜ |
 | 11 | Build a `recentStore` that remembers the last 5 vehicle ids you opened | Day 6 | ⬜ |
 | 12 | Answer the Day 6 questions in [interview-qa.md](interview-qa.md#day-6--pinia-and-state-management) out loud | Day 6 | ⬜ |
+| 13 | Show a debt-to-income % (EMI ÷ monthly income) and warn if it is over 40% | Day 7 | ⬜ |
+| 14 | Answer the Day 7 questions in [interview-qa.md](interview-qa.md#day-7--finance-calculator-and-application) out loud | Day 7 | ⬜ |
 
 ---
 
@@ -174,7 +193,7 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | # | Limitation | Why | Planned fix |
 |---|---|---|---|
 | 1 | ~~"View details" buttons do nothing~~ | ✅ Fixed: cards go to `/vehicles/:id` | Done (Day 4) |
-| 2 | "Claim offer", "Book service" and "Book a test drive" scroll to the contact section | There are no forms or pages for them yet | Forms day |
+| 2 | "Claim offer" and "Book service" still scroll to contact | Finance now has `/finance`; those two still have no form | Later forms |
 | 3 | ~~Vehicle images are coloured placeholders~~ | ✅ Fixed: real photos added. The coloured placeholder is still the fallback for vehicles without an `image` | Done (Day 2) |
 | 4 | ~~Favourite hearts reset on page reload and aren't shared across cards and the details page~~ | ✅ Fixed: `favoriteStore` + `localStorage`; `/saved` | Done (Day 6) |
 | 5 | Search state lives inside `VehicleSearch`, and the parent reaches in with `defineExpose` | Left local on purpose — not every form belongs in Pinia | Optional later |
@@ -194,7 +213,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | Day | Topic | Main tasks |
 |---|---|---|
 | 6 | ~~Pinia~~ | ✅ Done: vehicle / auth / favorite / compare stores |
-| 7 | Forms | Test drive and service appointment forms with validation |
+| 7 | ~~Finance / forms~~ | ✅ Done: `/finance` calculator + validated POST application |
 | 8 | Compare and favourites polish | Richer compare (highlight diffs); optional account-backed favourites |
 | 9 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
 | 10 | Admin app | Create `admin/` (port 5182): inventory table and leads |

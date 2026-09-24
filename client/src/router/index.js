@@ -36,6 +36,11 @@ const router = createRouter({
       component: () => import('@/views/CompareView.vue'),
     },
     {
+      path: '/finance',
+      name: 'finance',
+      component: () => import('@/views/FinanceView.vue'),
+    },
+    {
       path: '/credits',
       name: 'credits',
       component: () => import('@/views/CreditsView.vue'),

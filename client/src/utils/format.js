@@ -17,6 +17,15 @@ export function formatCurrency(amount) {
   return currencyFormatter.format(amount)
 }
 
+export function formatCurrencyPrecise(amount) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(amount) || 0)
+}
+
 export function formatMileage(miles) {
   return `${numberFormatter.format(miles)} mi`
 }

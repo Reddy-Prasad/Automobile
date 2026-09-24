@@ -139,8 +139,11 @@ export function handleMockRequest(path, init = {}) {
     return json(200, db.financeApplications)
   }
   if (method === 'POST' && match(pathname, '/finance-applications')) {
-    if (!body.vehicleId || !body.name) {
-      return json(400, { message: 'A finance application needs a vehicleId and name.' })
+    if (!body.name) {
+      return json(400, { message: 'A finance application needs a name.' })
+    }
+    if (!body.vehicleId && !(Number(body.loanAmount) > 0)) {
+      return json(400, { message: 'A finance application needs a vehicleId or a loan amount.' })
     }
     const record = {
       id: nextId('finance'),

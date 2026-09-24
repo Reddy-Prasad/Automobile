@@ -1,6 +1,6 @@
 <script setup>
 import { dealer, locations } from '@/data/dealer'
-import { mainNav } from '@/data/navigation'
+import { mainNav, navLinkTo } from '@/data/navigation'
 
 const currentYear = new Date().getFullYear()
 </script>
@@ -64,10 +64,10 @@ const currentYear = new Date().getFullYear()
                 My requests
               </RouterLink>
             </li>
-            <li v-for="link in mainNav" :key="link.hash" class="mb-1">
+            <li v-for="link in mainNav" :key="link.label" class="mb-1">
               <RouterLink
                 class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"
-                :to="{ name: 'home', hash: link.hash }"
+                :to="navLinkTo(link)"
               >
                 {{ link.label }}
               </RouterLink>

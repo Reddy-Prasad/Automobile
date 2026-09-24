@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { Collapse } from 'bootstrap'
 import { dealer } from '@/data/dealer'
-import { mainNav } from '@/data/navigation'
+import { mainNav, navLinkTo } from '@/data/navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { useCompareStore } from '@/stores/compareStore'
 import { useFavoriteStore } from '@/stores/favoriteStore'
@@ -98,8 +98,12 @@ watch(
                 My requests
               </RouterLink>
             </li>
-            <li v-for="link in mainNav" :key="link.hash" class="nav-item">
-              <RouterLink class="nav-link" :to="{ name: 'home', hash: link.hash }">
+            <li v-for="link in mainNav" :key="link.label" class="nav-item">
+              <RouterLink
+                class="nav-link"
+                :class="{ active: link.name && route.name === link.name }"
+                :to="navLinkTo(link)"
+              >
                 {{ link.label }}
               </RouterLink>
             </li>
