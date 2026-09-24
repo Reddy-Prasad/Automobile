@@ -1,0 +1,10 @@
+html,
+body,
+#app {
+  height: 100%;
+}
+
+/* Keeps section headings visible below the sticky navbar when jumping to #anchors. */
+section[id] {
+  scroll-margin-top: 80px;
+}
