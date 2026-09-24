@@ -16,6 +16,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 3 | Client vehicle inventory | ✅ Done | — |
 | 4 | Vehicle details | ✅ Done | — |
 | 5 | Mock API and service layer | ✅ Done | — |
+| 6 | Pinia and state management | ✅ Done | — |
 
 ---
 
@@ -129,6 +130,22 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 6 — Pinia and state management
+
+**Goal:** share only the state that many screens need. Views still do not call the mock API.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | `vehicleStore`: load list + one vehicle (async actions) | ✅ | `stores/vehicleStore.js` |
+| 2 | `favoriteStore`: add / remove / toggle, persist, header count, `/saved` | ✅ | `stores/favoriteStore.js`, `FavoritesView.vue` |
+| 3 | `compareStore`: up to 3 vehicles, `/compare` table | ✅ | `stores/compareStore.js`, `CompareView.vue` |
+| 4 | `authStore`: demo sign-in (async) / sign-out | ✅ | `stores/authStore.js`, header |
+| 5 | Cards and details share hearts and compare | ✅ | `VehicleCard`, `VehicleDetailsView` |
+| 6 | Keep filters, forms, and request panels out of Pinia | ✅ | inventory + details |
+| 7 | Learn: state, getters, actions, `storeToRefs`, when not to use Pinia | ✅ | [Q&A Day 6](interview-qa.md#day-6--pinia-and-state-management) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -145,6 +162,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 8 | Answer the Day 4 questions in [interview-qa.md](interview-qa.md#day-4--vehicle-details) out loud | Day 4 | ⬜ |
 | 9 | Add `offerService.js` + `useOffers()` and load homepage offers through the API | Day 5 | ⬜ |
 | 10 | Answer the Day 5 questions in [interview-qa.md](interview-qa.md#day-5--mock-api-and-service-layer) out loud | Day 5 | ⬜ |
+| 11 | Build a `recentStore` that remembers the last 5 vehicle ids you opened | Day 6 | ⬜ |
+| 12 | Answer the Day 6 questions in [interview-qa.md](interview-qa.md#day-6--pinia-and-state-management) out loud | Day 6 | ⬜ |
 
 ---
 
@@ -157,8 +176,8 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 1 | ~~"View details" buttons do nothing~~ | ✅ Fixed: cards go to `/vehicles/:id` | Done (Day 4) |
 | 2 | "Claim offer", "Book service" and "Book a test drive" scroll to the contact section | There are no forms or pages for them yet | Forms day |
 | 3 | ~~Vehicle images are coloured placeholders~~ | ✅ Fixed: real photos added. The coloured placeholder is still the fallback for vehicles without an `image` | Done (Day 2) |
-| 4 | Favourite hearts reset on page reload and aren't shared across cards and the details page | Each surface keeps its own `ref` | Pinia day |
-| 5 | Search state lives inside `VehicleSearch`, and the parent reaches in with `defineExpose` | Quick fix before Pinia is taught | Pinia day (search store) |
+| 4 | ~~Favourite hearts reset on page reload and aren't shared across cards and the details page~~ | ✅ Fixed: `favoriteStore` + `localStorage`; `/saved` | Done (Day 6) |
+| 5 | Search state lives inside `VehicleSearch`, and the parent reaches in with `defineExpose` | Left local on purpose — not every form belongs in Pinia | Optional later |
 | 6 | Hash links on the homepage still get `aria-current="page"` | Those links all point at the `home` route; the hash is ignored | Later, when New/Used become real routes |
 | 7 | Extra inventory cars reuse photos of a similar model | We only downloaded 12 Commons images | Inventory polish / more photos |
 | 8 | Filter choices in the URL are read once, not kept in sync as you type | Enough to deep-link from the homepage; a full query-string sync is later work | Pinia / inventory polish |
@@ -174,9 +193,9 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 
 | Day | Topic | Main tasks |
 |---|---|---|
-| 6 | Pinia | Vehicles, search and favourites stores; persist favourites in `localStorage` |
+| 6 | ~~Pinia~~ | ✅ Done: vehicle / auth / favorite / compare stores |
 | 7 | Forms | Test drive and service appointment forms with validation |
-| 8 | Compare and favourites | Compare up to 3 vehicles side by side; favourites page |
+| 8 | Compare and favourites polish | Richer compare (highlight diffs); optional account-backed favourites |
 | 9 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
 | 10 | Admin app | Create `admin/` (port 5182): inventory table and leads |
 | 11 | Auth | Login, route guards, role-based access |

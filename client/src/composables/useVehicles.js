@@ -1,25 +1,17 @@
-import { ref } from 'vue'
-import { failNextRequest } from '@/api/http'
-import { listVehicles } from '@/services/vehicleService'
-import { useAsyncResource } from './useAsyncResource'
+import { storeToRefs } from 'pinia'
+import { useVehicleStore } from '@/stores/vehicleStore'
 
+/** Thin wrapper so older screens can still call load/retry. Prefer the store. */
 export function useVehicles() {
-  const vehicles = ref([])
-  const { status, error, run } = useAsyncResource()
+  const store = useVehicleStore()
+  const { items, listStatus, listError } = storeToRefs(store)
 
-  async function load(params) {
-    try {
-      vehicles.value = await run(() => listVehicles(params))
-    } catch {
-      vehicles.value = []
-    }
-    return vehicles.value
+  return {
+    vehicles: items,
+    status: listStatus,
+    error: listError,
+    load: () => store.loadVehicles(),
+    retry: () => store.loadVehicles({ force: true }),
+    simulateError: () => store.simulateError(),
   }
-
-  function simulateError() {
-    failNextRequest()
-    return load()
-  }
-
-  return { vehicles, status, error, load, retry: load, simulateError }
 }

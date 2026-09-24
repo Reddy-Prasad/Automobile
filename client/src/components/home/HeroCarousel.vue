@@ -35,15 +35,21 @@ const slides = [
   },
 ]
 
+const AUTO_ADVANCE_MS = 5500
+
 const carouselEl = ref(null)
 let carousel = null
 
 onMounted(() => {
-  carousel = Carousel.getOrCreateInstance(carouselEl.value, {
-    interval: 6000,
+  Carousel.getInstance(carouselEl.value)?.dispose()
+  carousel = new Carousel(carouselEl.value, {
+    interval: AUTO_ADVANCE_MS,
     ride: 'carousel',
     pause: 'hover',
+    wrap: true,
+    keyboard: true,
   })
+  carousel.cycle()
 })
 
 onBeforeUnmount(() => {
@@ -53,7 +59,13 @@ onBeforeUnmount(() => {
 
 <template>
   <section aria-label="Featured promotions">
-    <div id="heroCarousel" ref="carouselEl" class="carousel slide carousel-fade">
+    <div
+      id="heroCarousel"
+      ref="carouselEl"
+      class="carousel slide carousel-fade"
+      data-bs-ride="carousel"
+      :data-bs-interval="AUTO_ADVANCE_MS"
+    >
       <div class="carousel-indicators">
         <button
           v-for="(slide, index) in slides"

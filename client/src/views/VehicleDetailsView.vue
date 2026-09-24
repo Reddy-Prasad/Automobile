@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import ResourceState from '@/components/common/ResourceState.vue'
 import VehicleActions from '@/components/vehicles/VehicleActions.vue'
@@ -9,6 +10,8 @@ import { useFinanceApplication } from '@/composables/useFinanceApplication'
 import { useTestDriveRequest } from '@/composables/useTestDriveRequest'
 import { useVehicle } from '@/composables/useVehicle'
 import { conditionLabels } from '@/data/vehicles'
+import { useCompareStore } from '@/stores/compareStore'
+import { useFavoriteStore } from '@/stores/favoriteStore'
 import { formatCurrency, formatMileage } from '@/utils/format'
 
 const props = defineProps({
@@ -29,14 +32,17 @@ const {
   status,
   error,
   retry,
-  saveVehicle,
 } = useVehicle(() => props.id)
+
+const favoriteStore = useFavoriteStore()
+const compareStore = useCompareStore()
+const { message: compareNote } = storeToRefs(compareStore)
 
 const drive = useTestDriveRequest()
 const finance = useFinanceApplication()
 
-const isCompared = ref(false)
-const compareNote = ref('')
+const isFavorite = computed(() => (vehicle.value ? favoriteStore.has(vehicle.value.id) : false))
+const isCompared = computed(() => (vehicle.value ? compareStore.has(vehicle.value.id) : false))
 const panel = ref('')
 
 const savings = computed(() => {
@@ -56,8 +62,6 @@ const monthlyEstimate = computed(() => {
 watch(
   () => props.id,
   () => {
-    isCompared.value = false
-    compareNote.value = ''
     drive.reset()
     finance.reset()
     panel.value = typeof route.query.action === 'string' ? route.query.action : ''
@@ -76,15 +80,12 @@ function openPanel(name) {
   panel.value = panel.value === name ? '' : name
 }
 
-async function onFavorite() {
-  await saveVehicle({ saved: !vehicle.value.saved })
+function onFavorite() {
+  if (vehicle.value) favoriteStore.toggle(vehicle.value)
 }
 
 function onCompare() {
-  isCompared.value = !isCompared.value
-  compareNote.value = isCompared.value
-    ? 'Added to compare. A side-by-side compare page comes later.'
-    : ''
+  if (vehicle.value) compareStore.toggle(vehicle.value)
 }
 
 function onFinance() {
@@ -188,7 +189,7 @@ function onGallerySelect(item) {
           </ul>
 
           <VehicleActions
-            :is-favorite="Boolean(vehicle.saved)"
+            :is-favorite="isFavorite"
             :is-compared="isCompared"
             :test-drive-disabled="vehicle.availability === 'RESERVED'"
             @favorite="onFavorite"
@@ -201,7 +202,10 @@ function onGallerySelect(item) {
           <p v-if="vehicle.availability === 'RESERVED'" class="small text-danger mt-2 mb-0">
             This vehicle is reserved, so a test drive cannot be booked right now.
           </p>
-          <p v-if="compareNote" class="small text-body-secondary mt-2 mb-0">{{ compareNote }}</p>
+          <p v-if="compareNote" class="small text-body-secondary mt-2 mb-0">
+            {{ compareNote }}
+            <RouterLink v-if="isCompared" class="ms-1" :to="{ name: 'compare' }">Open compare</RouterLink>
+          </p>
 
           <div v-if="panel === 'finance'" id="finance-panel" class="card border-0 shadow-sm mt-4">
             <div class="card-body">

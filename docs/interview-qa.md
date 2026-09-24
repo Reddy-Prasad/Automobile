@@ -84,6 +84,19 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 10. Why must the Vue component not know about the mock?
 11. Where does the real API go — one file or every view?
 
+**[Day 6 — Pinia and state management](#day-6--pinia-and-state-management)**
+
+1. Why do we need state management?
+2. Local component state vs composable state vs Pinia?
+3. What are state, getters, and actions?
+4. How do you use a store in a Vue component?
+5. What is an async action?
+6. When should you NOT put something in Pinia?
+7. Why `storeToRefs`?
+8. How does AutoDrive load vehicles through Pinia?
+9. How do favorites stay in sync across pages?
+10. Pinia vs the Day 5 request status machine?
+
 ---
 
 ## Day 1 — Project foundation
@@ -524,3 +537,56 @@ The mock is a stand-in for the network. If `VehiclesView` imported `db.vehicles`
 Request **state** (loading / empty / error) is a second file: `useAsyncResource.js`. That is not Pinia. Pinia is shared app state later.
 
 Full map: [api-handling.md](api-handling.md).
+
+## Day 6 — Pinia and state management
+
+### 1. Why do we need state management?
+
+When two screens must see the **same** data at the same time — the header favorite count and the heart on a card — a `ref` inside one component is not enough. Pinia is a shared box those screens both read and write.
+
+### 2. Local component state vs composable state vs Pinia?
+
+| Kind | Lives | Example in AutoDrive |
+|---|---|---|
+| **Local** | One component | Inventory filters, pagination, which details panel is open |
+| **Composable** | One feature, can be reused | `useTestDriveRequest` — form + POST status for that screen |
+| **Pinia** | The whole app | Favorite ids, compare list, signed-in user, cached vehicle list |
+
+### 3. What are state, getters, and actions?
+
+- **state** — the data (`items`, `ids`, `user`)
+- **getters** — derived values (`count`, `has(id)`, `featured`)
+- **actions** — functions that change state, including **async** ones (`loadVehicles`, `toggle`)
+
+### 4. How do you use a store in a Vue component?
+
+```js
+const favoriteStore = useFavoriteStore()
+favoriteStore.toggle(vehicle)
+```
+
+In the template, `favoriteStore.count` is reactive. If you destructure state, use `storeToRefs` or you lose reactivity.
+
+### 5. What is an async action?
+
+An action that `await`s a service. `vehicleStore.loadVehicles()` sets `listStatus = 'loading'`, then `await listVehicles()`, then success or error. The view still does not call `vehicleService` itself.
+
+### 6. When should you NOT put something in Pinia?
+
+If only one screen needs it, keep it local. Filters, sort, page number, test-drive name, and the open finance panel are not Pinia. A store for every input is harder to debug, not easier.
+
+### 7. Why `storeToRefs`?
+
+`const { items } = vehicleStore` copies the value once — it will not update. `storeToRefs(vehicleStore)` gives refs that stay in sync. Actions are functions; take them from the store, not from `storeToRefs`.
+
+### 8. How does AutoDrive load vehicles through Pinia?
+
+`VehiclesView` → `vehicleStore.loadVehicles()` → `vehicleService.listVehicles()` → `request('/vehicles')` → mock (or later .NET). Home uses the same store, so the second visit can reuse the cached list.
+
+### 9. How do favorites stay in sync across pages?
+
+`favoriteStore` holds `ids`. Cards, details, the header badge, and `/saved` all call the same store. `localStorage` keeps ids after refresh. Toggle also PATCHes `{ saved }` so the mock API stays in practice.
+
+### 10. Pinia vs the Day 5 request status machine?
+
+Day 5 status (`loading` / `error`) answers “what is **this request** doing?” Pinia answers “what does the **app** remember?” `vehicleStore` happens to store both: the cached list (app memory) and `listStatus` (that request). Favorites do not need a loading spinner to toggle an id.

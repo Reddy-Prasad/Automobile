@@ -26,6 +26,16 @@ const router = createRouter({
       component: () => import('@/views/RequestsView.vue'),
     },
     {
+      path: '/saved',
+      name: 'saved',
+      component: () => import('@/views/FavoritesView.vue'),
+    },
+    {
+      path: '/compare',
+      name: 'compare',
+      component: () => import('@/views/CompareView.vue'),
+    },
+    {
       path: '/credits',
       name: 'credits',
       component: () => import('@/views/CreditsView.vue'),

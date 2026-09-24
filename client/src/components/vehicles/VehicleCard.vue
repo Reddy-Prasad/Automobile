@@ -1,6 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { conditionLabels } from '@/data/vehicles'
+import { useCompareStore } from '@/stores/compareStore'
+import { useFavoriteStore } from '@/stores/favoriteStore'
 import { formatCurrency, formatMileage } from '@/utils/format'
 import { vehicleTitle } from '@/utils/vehicles'
 
@@ -8,12 +10,16 @@ const props = defineProps({
   vehicle: { type: Object, required: true },
 })
 
+const favoriteStore = useFavoriteStore()
+const compareStore = useCompareStore()
+
 const detailsTo = computed(() => ({
   name: 'vehicle-details',
   params: { id: String(props.vehicle.id) },
 }))
 
-const isFavorite = ref(false)
+const isFavorite = computed(() => favoriteStore.has(props.vehicle.id))
+const isCompared = computed(() => compareStore.has(props.vehicle.id))
 
 const title = computed(() => vehicleTitle(props.vehicle))
 
@@ -78,15 +84,29 @@ const availability = computed(() => {
         {{ conditionLabels[vehicle.condition] }}
       </span>
 
-      <button
-        type="button"
-        class="btn btn-light btn-sm rounded-circle position-absolute top-0 end-0 m-2 favorite-btn"
-        :aria-pressed="isFavorite"
-        :aria-label="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
-        @click.stop="isFavorite = !isFavorite"
-      >
-        <i class="bi" :class="isFavorite ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
-      </button>
+      <div class="position-absolute top-0 end-0 m-2 d-flex gap-1">
+        <button
+          type="button"
+          class="btn btn-light btn-sm rounded-circle favorite-btn"
+          :aria-pressed="isCompared"
+          :aria-label="isCompared ? 'Remove from compare' : 'Add to compare'"
+          @click.stop="compareStore.toggle(vehicle)"
+        >
+          <i
+            class="bi"
+            :class="isCompared ? 'bi-plus-slash-minus text-primary' : 'bi-plus-slash-minus'"
+          ></i>
+        </button>
+        <button
+          type="button"
+          class="btn btn-light btn-sm rounded-circle favorite-btn"
+          :aria-pressed="isFavorite"
+          :aria-label="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
+          @click.stop="favoriteStore.toggle(vehicle)"
+        >
+          <i class="bi" :class="isFavorite ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
+        </button>
+      </div>
     </div>
 
     <div class="card-body d-flex flex-column">

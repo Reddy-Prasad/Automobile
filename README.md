@@ -46,6 +46,7 @@ client/
     ├── api/                   HTTP client, request log, in-memory mock REST router
     ├── services/              vehicle, customer, testDrive, finance
     ├── composables/           useVehicles, useVehicle, request helpers
+    ├── stores/                Pinia: vehicles, auth, favorites, compare
     ├── data/                  Seed data for the mock DB and UI copy
     ├── utils/                 Formatters (currency, mileage, date) and vehicle helpers
     ├── components/
@@ -53,7 +54,7 @@ client/
     │   ├── vehicles/          VehicleCard, VehicleGallery, VehicleActions
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 HomeView, VehiclesView, VehicleDetailsView, RequestsView, CreditsView, NotFoundView
+    └── views/                 Home, inventory, details, saved, compare, requests, credits, 404
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
@@ -103,6 +104,14 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Footer API log + `console.info('[API] GET /vehicles → 200')`
 - Switch later with `VITE_USE_MOCK=false` and `VITE_API_BASE_URL`
 - Exercise: put homepage offers behind `offerService` + `useOffers()`
+
+### Day 6 — Pinia and state management
+
+- Four stores only: `vehicleStore`, `authStore`, `favoriteStore`, `compareStore`
+- Flow: view → store → service → mock API. Inventory filters and test-drive forms stay local
+- Hearts and compare are shared; `/saved` and `/compare`; header counts; demo Sign in
+- Favorites persist in `localStorage`; compare and auth use `sessionStorage`
+- Exercise: build a `recentStore` for the last 5 opened vehicles
 
 ## Learning notes
 

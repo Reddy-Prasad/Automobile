@@ -1,15 +1,17 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import ResourceState from '@/components/common/ResourceState.vue'
 import SectionHeading from '@/components/common/SectionHeading.vue'
 import VehicleCard from '@/components/vehicles/VehicleCard.vue'
-import { useVehicles } from '@/composables/useVehicles'
 import { conditionLabels } from '@/data/vehicles'
+import { useVehicleStore } from '@/stores/vehicleStore'
 import { formatCurrency } from '@/utils/format'
 import { filterInventory, paginate, sortInventory, uniqueValues } from '@/utils/vehicles'
 
-const { vehicles, status, error, load, retry, simulateError } = useVehicles()
+const vehicleStore = useVehicleStore()
+const { items: vehicles, listStatus: status, listError: error } = storeToRefs(vehicleStore)
 
 const pageSize = 6
 const route = useRoute()
@@ -106,7 +108,7 @@ function resetFilters() {
 }
 
 onMounted(() => {
-  load()
+  vehicleStore.loadVehicles().catch(() => {})
 })
 </script>
 
@@ -116,10 +118,10 @@ onMounted(() => {
       <SectionHeading
         eyebrow="Vehicle inventory"
         title="Find your next vehicle"
-        subtitle="The list comes from GET /vehicles through the service layer. Filters still run in the browser after the response arrives."
+        subtitle="The list is loaded by vehicleStore → vehicleService → mock API. Filters stay on this page — they are not Pinia."
       />
       <div class="mb-3">
-        <button type="button" class="btn btn-outline-danger btn-sm" @click="simulateError">
+        <button type="button" class="btn btn-outline-danger btn-sm" @click="vehicleStore.simulateError">
           Simulate API error
         </button>
       </div>
@@ -207,7 +209,7 @@ onMounted(() => {
         :error="error"
         empty-title="The inventory API returned no vehicles"
         empty-text="Retry the request, or check the mock database seed."
-        @retry="retry"
+        @retry="() => vehicleStore.loadVehicles({ force: true })"
       >
       <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
         <div>

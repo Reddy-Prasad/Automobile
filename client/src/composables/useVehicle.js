@@ -1,6 +1,7 @@
-import { computed, ref, watch } from 'vue'
+import { computed, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { dealer, locations } from '@/data/dealer'
-import { getVehicle, patchVehicle } from '@/services/vehicleService'
+import { useVehicleStore } from '@/stores/vehicleStore'
 import {
   relatedVehicles,
   vehicleFeatures,
@@ -8,62 +9,40 @@ import {
   vehicleLocation,
   vehicleTitle,
 } from '@/utils/vehicles'
-import { useAsyncResource } from './useAsyncResource'
 
 export function useVehicle(idSource) {
-  const vehicle = ref(null)
-  const similar = ref([])
-  const { status, error, run } = useAsyncResource()
+  const store = useVehicleStore()
+  const { current, detailStatus, detailError, items } = storeToRefs(store)
 
-  const title = computed(() => (vehicle.value ? vehicleTitle(vehicle.value) : ''))
-  const features = computed(() => (vehicle.value ? vehicleFeatures(vehicle.value) : []))
-  const gallery = computed(() => (vehicle.value ? vehicleGallery(vehicle.value) : []))
+  const title = computed(() => (current.value ? vehicleTitle(current.value) : ''))
+  const features = computed(() => (current.value ? vehicleFeatures(current.value) : []))
+  const gallery = computed(() => (current.value ? vehicleGallery(current.value) : []))
   const location = computed(() =>
-    vehicle.value ? vehicleLocation(vehicle.value, locations) : null,
+    current.value ? vehicleLocation(current.value, locations) : null,
+  )
+  const similar = computed(() =>
+    current.value ? relatedVehicles(items.value, current.value) : [],
   )
 
-  async function load() {
-    const id = typeof idSource === 'function' ? idSource() : idSource
-    try {
-      const result = await run(() => getVehicle(id))
-      vehicle.value = result
-      try {
-        similar.value = relatedVehicles(await listSiblings(), result)
-      } catch {
-        similar.value = []
-      }
-    } catch {
-      vehicle.value = null
-      similar.value = []
-    }
-  }
-
-  async function listSiblings() {
-    const { listVehicles } = await import('@/services/vehicleService')
-    return listVehicles()
-  }
-
-  async function saveVehicle(changes) {
-    vehicle.value = await patchVehicle(vehicle.value.id, changes)
-    return vehicle.value
-  }
-
-  watch(idSource, () => {
-    load()
-  }, { immediate: true })
+  watch(
+    idSource,
+    (id) => {
+      store.loadVehicle(id).catch(() => {})
+    },
+    { immediate: true },
+  )
 
   return {
-    vehicle,
+    vehicle: current,
     similar,
     title,
     features,
     gallery,
     location,
     dealer,
-    status,
-    error,
-    load,
-    retry: load,
-    saveVehicle,
+    status: detailStatus,
+    error: detailError,
+    retry: () =>
+      store.loadVehicle(typeof idSource === 'function' ? idSource() : idSource).catch(() => {}),
   }
 }

@@ -1,7 +1,8 @@
 <script setup>
 import { computed, nextTick, onMounted, ref, useTemplateRef } from 'vue'
+import { storeToRefs } from 'pinia'
 import ResourceState from '@/components/common/ResourceState.vue'
-import { useVehicles } from '@/composables/useVehicles'
+import { useVehicleStore } from '@/stores/vehicleStore'
 import { filterVehicles } from '@/utils/vehicles'
 import { formatCurrency } from '@/utils/format'
 
@@ -16,17 +17,9 @@ import TradeInSection from '@/components/home/TradeInSection.vue'
 import LocationsSection from '@/components/home/LocationsSection.vue'
 import CtaSection from '@/components/home/CtaSection.vue'
 
-const { vehicles, status, error, load, retry } = useVehicles()
-
-const featuredVehicles = computed(() =>
-  vehicles.value.filter((vehicle) => vehicle.featured).slice(0, 4),
-)
-const newVehicles = computed(() =>
-  vehicles.value.filter((vehicle) => vehicle.condition === 'new').slice(0, 4),
-)
-const usedVehicles = computed(() =>
-  vehicles.value.filter((vehicle) => vehicle.condition !== 'new').slice(0, 4),
-)
+const vehicleStore = useVehicleStore()
+const { items: vehicles, listStatus: status, listError: error } = storeToRefs(vehicleStore)
+const { featured: featuredVehicles, newest: newVehicles, used: usedVehicles } = storeToRefs(vehicleStore)
 
 const vehicleSearch = useTemplateRef('vehicleSearch')
 const searchCriteria = ref(null)
@@ -65,7 +58,7 @@ function clearSearch() {
 }
 
 onMounted(() => {
-  load()
+  vehicleStore.loadVehicles().catch(() => {})
 })
 </script>
 
@@ -73,7 +66,7 @@ onMounted(() => {
   <h1 class="visually-hidden">AutoDrive — new, used and certified vehicles in Texas</h1>
 
   <HeroCarousel />
-  <ResourceState :status="status" :error="error" @retry="retry">
+  <ResourceState :status="status" :error="error" @retry="() => vehicleStore.loadVehicles({ force: true })">
   <VehicleSearch ref="vehicleSearch" :vehicles="vehicles" @search="onSearch" />
 
   <VehicleShowcase

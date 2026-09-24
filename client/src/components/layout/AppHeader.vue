@@ -1,12 +1,23 @@
 <script setup>
 import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { Collapse } from 'bootstrap'
 import { dealer } from '@/data/dealer'
 import { mainNav } from '@/data/navigation'
+import { useAuthStore } from '@/stores/authStore'
+import { useCompareStore } from '@/stores/compareStore'
+import { useFavoriteStore } from '@/stores/favoriteStore'
 
 const route = useRoute()
 const navCollapse = ref(null)
+const authStore = useAuthStore()
+const favoriteStore = useFavoriteStore()
+const compareStore = useCompareStore()
+
+const { isSignedIn, displayName, status: authStatus } = storeToRefs(authStore)
+const { count: favoriteCount } = storeToRefs(favoriteStore)
+const { count: compareCount } = storeToRefs(compareStore)
 
 watch(
   () => route.fullPath,
@@ -67,6 +78,22 @@ watch(
               </RouterLink>
             </li>
             <li class="nav-item">
+              <RouterLink class="nav-link" active-class="active" :to="{ name: 'saved' }">
+                Saved
+                <span v-if="favoriteCount" class="badge text-bg-warning text-dark ms-1">{{
+                  favoriteCount
+                }}</span>
+              </RouterLink>
+            </li>
+            <li class="nav-item">
+              <RouterLink class="nav-link" active-class="active" :to="{ name: 'compare' }">
+                Compare
+                <span v-if="compareCount" class="badge text-bg-warning text-dark ms-1">{{
+                  compareCount
+                }}</span>
+              </RouterLink>
+            </li>
+            <li class="nav-item">
               <RouterLink class="nav-link" active-class="active" :to="{ name: 'requests' }">
                 My requests
               </RouterLink>
@@ -77,12 +104,28 @@ watch(
               </RouterLink>
             </li>
           </ul>
-          <RouterLink
-            class="btn btn-warning fw-semibold ms-lg-3 mb-3 mb-lg-0"
-            :to="{ name: 'home', hash: '#contact' }"
-          >
-            <i class="bi bi-calendar-check me-1"></i>Book a test drive
-          </RouterLink>
+          <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 ms-lg-3 mb-3 mb-lg-0">
+            <button
+              v-if="!isSignedIn"
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              :disabled="authStatus === 'loading'"
+              @click="authStore.signIn()"
+            >
+              {{ authStatus === 'loading' ? 'Signing in…' : 'Sign in' }}
+            </button>
+            <button
+              v-else
+              type="button"
+              class="btn btn-outline-light btn-sm"
+              @click="authStore.signOut()"
+            >
+              {{ displayName }} · Sign out
+            </button>
+            <RouterLink class="btn btn-warning fw-semibold" :to="{ name: 'home', hash: '#contact' }">
+              <i class="bi bi-calendar-check me-1"></i>Book a test drive
+            </RouterLink>
+          </div>
         </div>
       </div>
     </nav>
