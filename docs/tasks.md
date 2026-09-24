@@ -125,6 +125,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 6 | Test-drive POST + finance POST; `/requests` for PATCH / PUT / DELETE | ✅ | details forms, `RequestsView.vue` |
 | 7 | Request log in the footer and `console.info('[API] …')` | ✅ | `ApiLogBar.vue`, `http.js` |
 | 8 | Learn: fetch, Promise, async/await, try/catch, JSON, error handling | ✅ | [Q&A Day 5](interview-qa.md#day-5--mock-api-and-service-layer) |
+| 9 | One-page map: API handling + request state (real API goes in `http.js` only) | ✅ | [api-handling.md](api-handling.md) |
 
 ---
 

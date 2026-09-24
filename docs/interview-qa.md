@@ -82,6 +82,7 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 8. GET vs POST vs PUT vs PATCH vs DELETE?
 9. How will this connect to a real .NET API?
 10. Why must the Vue component not know about the mock?
+11. Where does the real API go — one file or every view?
 
 ---
 
@@ -515,3 +516,11 @@ Set `VITE_USE_MOCK=false` and `VITE_API_BASE_URL=https://localhost:5001/api` in 
 ### 10. Why must the Vue component not know about the mock?
 
 The mock is a stand-in for the network. If `VehiclesView` imported `db.vehicles`, you would have to rewrite the view for .NET, and you could not show loading or retry. The view only knows `status`, `vehicles`, and `retry()`.
+
+### 11. Where does the real API go — one file or every view?
+
+**One file:** `client/src/api/http.js`. The `else` branch is already `fetch(baseUrl + path)`. Views never call `fetch`.
+
+Request **state** (loading / empty / error) is a second file: `useAsyncResource.js`. That is not Pinia. Pinia is shared app state later.
+
+Full map: [api-handling.md](api-handling.md).

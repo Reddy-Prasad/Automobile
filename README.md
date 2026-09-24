@@ -108,6 +108,7 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 
 - [Task tracker](docs/tasks.md): what's done, your practice exercises, known limitations and the roadmap. Updated every day.
 - [Interview questions & answers](docs/interview-qa.md): question index for self-testing plus full answers, grouped by day. Updated every day.
+- [API handling and request state](docs/api-handling.md): one page for `http.js` (mock vs real API) and INITIAL / LOADING / SUCCESS / EMPTY / ERROR / Retry.
 
 ## Daily Git workflow
 
