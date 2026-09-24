@@ -57,6 +57,19 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 11. How does pagination with `slice()` work?
 12. Why convert a `<select>` value with `Number()`?
 
+**[Day 4 — Vehicle details](#day-4--vehicle-details)**
+
+1. How does `:id` work in `/vehicles/:id`?
+2. How does the page know which vehicle to display?
+3. Where should data loading happen?
+4. Props vs emits?
+5. `useRoute()` vs `useRouter()`?
+6. What does `router.push()` do that a plain `<a href>` does not?
+7. What is `props: true` on a route?
+8. Why watch `id` instead of reading `route.params.id` once?
+9. Params vs query: `/vehicles/1` vs `/vehicles/1?action=finance`?
+10. Why `@click.stop` on the card favourite button?
+
 ---
 
 ## Day 1 — Project foundation
@@ -345,3 +358,69 @@ Resetting a reactive form is `Object.assign(filters, emptyFilters())` — that m
 ### 12. Why convert a `<select>` value with `Number()`?
 
 HTML form values are always strings. `vehicle.year === "2026"` is false when `year` is the number `2026`. `filterInventory` uses `Number(year)` and `Number(maxPrice)` so the comparison is number-to-number.
+
+## Day 4 — Vehicle details
+
+### 1. How does `:id` work in `/vehicles/:id`?
+
+`:id` is a **dynamic segment**. Vue Router matches any value in that position and puts it on the route: `/vehicles/7` → `route.params.id === '7'`. Params are always **strings**.
+
+The same `VehicleDetailsView` is reused for every id. The catch-all `/:pathMatch(.*)*` stays last so it does not swallow `/vehicles/7`.
+
+### 2. How does the page know which vehicle to display?
+
+It reads the id (from the `id` prop, because the route has `props: true`) and looks it up in the mock list:
+
+```js
+const vehicle = computed(() => findVehicleById(vehicles, props.id))
+```
+
+`findVehicleById` compares with `String(...)` on both sides so `"7"` matches `7`. If nothing matches, the template shows "Vehicle not found".
+
+### 3. Where should data loading happen?
+
+In the **page** (the view), not in the router file and not in a presentational child.
+
+Today that is a synchronous `find` inside a `computed`, because the data is a local module. When there is an API, the same place becomes `watch` / `onMounted` plus an async function: read `id`, fetch, set a `ref`. Children like `VehicleGallery` only receive the result as props.
+
+Do not fetch inside `VehicleCard`. A card should not need to know how data is loaded.
+
+### 4. Props vs emits?
+
+**Props go down. Events go up.**
+
+`VehicleActions` does not toggle favourite itself in a way the parent cannot see. The parent owns `isFavorite` and passes it as a prop. The child emits `favorite`; the parent runs `onFavorite`. Same for compare, finance, test drive and trade-in.
+
+If the child mutated a prop, Vue would warn and the parent would lose control. If the parent imported the button markup, reuse would be harder.
+
+### 5. `useRoute()` vs `useRouter()`?
+
+- `useRoute()` is the **current route** (params, query, hash, name). Read-only snapshot that stays reactive.
+- `useRouter()` is the **router instance**. You call `push`, `replace` and `back` on it.
+
+Trade-in uses `router.push({ name: 'home', hash: '#trade-in', query: { vehicle: id } })`. The finance panel can be opened from a query: `/vehicles/1?action=finance`.
+
+### 6. What does `router.push()` do that a plain `<a href>` does not?
+
+`router.push` changes the URL **without a full page reload**, so the Vue app stays alive (Pinia, scroll position helpers, layout). `<RouterLink>` is the template version of the same thing. A raw `<a href="/vehicles/1">` would remount the whole app.
+
+### 7. What is `props: true` on a route?
+
+It copies `route.params` onto the page component as props. `VehicleDetailsView` declares `defineProps({ id: … })` instead of only reading `useRoute()`. That makes the page easier to test: you can mount it with `id="3"` and skip the router.
+
+### 8. Why watch `id` instead of reading `route.params.id` once?
+
+Vue **reuses** the same details component when you go from `/vehicles/1` to `/vehicles/17`. `onMounted` does not run again. A `const id = route.params.id` string captured once would stay `1`.
+
+A `computed` / `watch` on `props.id` (or `() => route.params.id`) updates the vehicle, resets the test-drive form, and sets `document.title`.
+
+### 9. Params vs query: `/vehicles/1` vs `/vehicles/1?action=finance`?
+
+- **Params** (`:id`) identify the resource. They belong in the path.
+- **Query** (`?action=finance`) is optional extra state: which panel to open, where the user came from, a filter to restore.
+
+`/vehicles?condition=new` (Day 3) is query. `/vehicles/1` is a param. `/vehicles/1?action=finance` is both.
+
+### 10. Why `@click.stop` on the card favourite button?
+
+The card uses Bootstrap's `stretched-link`, so a click anywhere on the card follows **View details**. Without `.stop`, clicking the heart would also navigate. `.stop` calls `stopPropagation()` so only the favourite `ref` toggles.

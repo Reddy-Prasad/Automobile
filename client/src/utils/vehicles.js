@@ -62,3 +62,64 @@ export function paginate(items, page, pageSize) {
   const start = (page - 1) * pageSize
   return items.slice(start, start + pageSize)
 }
+
+export function findVehicleById(list, id) {
+  return list.find((vehicle) => String(vehicle.id) === String(id))
+}
+
+export function vehicleLocation(vehicle, locations) {
+  return locations[(vehicle.id - 1) % locations.length]
+}
+
+export function vehicleFeatures(vehicle) {
+  const features = []
+
+  if (vehicle.condition === 'new') features.push('Full factory warranty')
+  if (vehicle.condition === 'cpo') {
+    features.push('Certified 172-point inspection')
+    features.push('12-month / 12,000-mile limited warranty')
+  }
+  if (vehicle.fuelType === 'Electric') {
+    features.push('Electric powertrain')
+    features.push('Home charging compatible')
+  }
+  if (vehicle.fuelType === 'Hybrid') {
+    features.push('Hybrid powertrain')
+    features.push('Regenerative braking')
+  }
+  if (vehicle.drivetrain === 'AWD' || vehicle.drivetrain === '4WD') {
+    features.push(`${vehicle.drivetrain} traction`)
+  }
+  if (vehicle.transmission === 'Manual') features.push('Manual gearbox')
+  if (vehicle.transmission === 'CVT') features.push('CVT transmission')
+
+  features.push('Backup camera', 'Bluetooth audio', 'Apple CarPlay / Android Auto')
+  return features
+}
+
+export function vehicleGallery(vehicle) {
+  const items = []
+
+  if (vehicle.image) {
+    items.push({ id: 'exterior', src: vehicle.image, label: 'Exterior' })
+  }
+
+  items.push({
+    id: 'paint',
+    src: null,
+    color: vehicle.colorHex,
+    label: vehicle.exteriorColor,
+  })
+
+  return items
+}
+
+export function relatedVehicles(list, vehicle, limit = 3) {
+  return list
+    .filter(
+      (item) =>
+        item.id !== vehicle.id &&
+        (item.make === vehicle.make || item.bodyType === vehicle.bodyType),
+    )
+    .slice(0, limit)
+}

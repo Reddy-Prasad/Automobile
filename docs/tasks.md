@@ -14,6 +14,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 1 | Project foundation | ✅ Done | included in `day-02` |
 | 2 | Client homepage | ✅ Done | `day-02` |
 | 3 | Client vehicle inventory | ✅ Done | — |
+| 4 | Vehicle details | ✅ Done | — |
 
 ---
 
@@ -91,6 +92,24 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 4 — Vehicle details
+
+**Goal:** a `/vehicles/:id` page that reads the id from the URL and shows one vehicle from mock data.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Dynamic route `/vehicles/:id` with `props: true` | ✅ | `router/index.js` |
+| 2 | Details page: gallery, title, price, year, mileage, fuel, transmission, body | ✅ | `views/VehicleDetailsView.vue` |
+| 3 | Features and specifications from helpers | ✅ | `utils/vehicles.js` |
+| 4 | Dealer and location cards | ✅ | `VehicleDetailsView.vue`, `data/dealer.js` |
+| 5 | Favorite, compare, finance, test drive and trade-in actions (props / emits) | ✅ | `VehicleActions.vue` |
+| 6 | Vehicle cards navigate to details; favourite click does not | ✅ | `VehicleCard.vue` |
+| 7 | Missing id shows an in-page not-found | ✅ | `VehicleDetailsView.vue` |
+| 8 | Inventory nav stays active on the details page | ✅ | `AppHeader.vue` |
+| 9 | Learn: dynamic routes, params, query, `useRoute`, `useRouter`, `router.push`, route props, emits | ✅ | [Q&A Day 4](interview-qa.md#day-4--vehicle-details) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -103,6 +122,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 4 | Answer the Day 2 questions in [interview-qa.md](interview-qa.md#day-2--client-homepage) out loud without reading the answers | Day 2 | ⬜ |
 | 5 | Add a **Body style** filter to the inventory page | Day 3 | ⬜ |
 | 6 | Answer the Day 3 questions in [interview-qa.md](interview-qa.md#day-3--vehicle-inventory) out loud | Day 3 | ⬜ |
+| 7 | Add Previous / Next vehicle links on the details page | Day 4 | ⬜ |
+| 8 | Answer the Day 4 questions in [interview-qa.md](interview-qa.md#day-4--vehicle-details) out loud | Day 4 | ⬜ |
 
 ---
 
@@ -112,10 +133,10 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 
 | # | Limitation | Why | Planned fix |
 |---|---|---|---|
-| 1 | "View details" buttons do nothing | There is no vehicle details page yet | Vehicle details route |
+| 1 | ~~"View details" buttons do nothing~~ | ✅ Fixed: cards go to `/vehicles/:id` | Done (Day 4) |
 | 2 | "Claim offer", "Book service" and "Book a test drive" scroll to the contact section | There are no forms or pages for them yet | Forms day |
 | 3 | ~~Vehicle images are coloured placeholders~~ | ✅ Fixed: real photos added. The coloured placeholder is still the fallback for vehicles without an `image` | Done (Day 2) |
-| 4 | Favourite hearts reset on page reload and aren't shared | Each card keeps its own `ref` | Pinia day |
+| 4 | Favourite hearts reset on page reload and aren't shared across cards and the details page | Each surface keeps its own `ref` | Pinia day |
 | 5 | Search state lives inside `VehicleSearch`, and the parent reaches in with `defineExpose` | Quick fix before Pinia is taught | Pinia day (search store) |
 | 6 | Hash links on the homepage still get `aria-current="page"` | Those links all point at the `home` route; the hash is ignored | Later, when New/Used become real routes |
 | 7 | Extra inventory cars reuse photos of a similar model | We only downloaded 12 Commons images | Inventory polish / more photos |
@@ -130,7 +151,6 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 
 | Day | Topic | Main tasks |
 |---|---|---|
-| 4 | Vehicle details | Vehicle details page (`/vehicles/:id`), "View details" wiring, related vehicles |
 | 5 | Pinia | Vehicles, search and favourites stores; persist favourites in `localStorage` |
 | 6 | Mock API layer | Async service functions with a fake delay; loading, empty and error states |
 | 7 | Forms | Test drive and service appointment forms with validation |

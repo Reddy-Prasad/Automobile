@@ -8,6 +8,11 @@ const props = defineProps({
   vehicle: { type: Object, required: true },
 })
 
+const detailsTo = computed(() => ({
+  name: 'vehicle-details',
+  params: { id: String(props.vehicle.id) },
+}))
+
 const isFavorite = ref(false)
 
 const title = computed(() => vehicleTitle(props.vehicle))
@@ -47,7 +52,7 @@ const availability = computed(() => {
 </script>
 
 <template>
-  <article class="card h-100 border-0 shadow-sm vehicle-card">
+  <article class="card h-100 border-0 shadow-sm vehicle-card position-relative">
     <div class="position-relative">
       <img
         v-if="vehicle.image"
@@ -78,7 +83,7 @@ const availability = computed(() => {
         class="btn btn-light btn-sm rounded-circle position-absolute top-0 end-0 m-2 favorite-btn"
         :aria-pressed="isFavorite"
         :aria-label="isFavorite ? 'Remove from favorites' : 'Save to favorites'"
-        @click="isFavorite = !isFavorite"
+        @click.stop="isFavorite = !isFavorite"
       >
         <i class="bi" :class="isFavorite ? 'bi-heart-fill text-danger' : 'bi-heart'"></i>
       </button>
@@ -112,7 +117,9 @@ const availability = computed(() => {
 
       <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
         <span class="small text-body-secondary">Stock #{{ vehicle.stockNumber }}</span>
-        <button type="button" class="btn btn-outline-primary btn-sm">View details</button>
+        <RouterLink class="btn btn-outline-primary btn-sm stretched-link" :to="detailsTo">
+          View details
+        </RouterLink>
       </div>
     </div>
   </article>
@@ -142,6 +149,8 @@ const availability = computed(() => {
 }
 
 .favorite-btn {
+  position: relative;
+  z-index: 2;
   width: 2.25rem;
   height: 2.25rem;
 }

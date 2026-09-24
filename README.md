@@ -47,10 +47,10 @@ client/
     ├── utils/                 Formatters (currency, mileage, date) and vehicle helpers
     ├── components/
     │   ├── common/            SectionHeading
-    │   ├── vehicles/          VehicleCard
+    │   ├── vehicles/          VehicleCard, VehicleGallery, VehicleActions
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 HomeView, VehiclesView, CreditsView, NotFoundView
+    └── views/                 HomeView, VehiclesView, VehicleDetailsView, CreditsView, NotFoundView
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
@@ -83,6 +83,14 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Homepage, header and footer link into inventory; `/vehicles?condition=new` seeds the form
 - Concepts: `map`, `filter`, `find`, `sort`, `some`, `every`, `includes`, destructuring, spread; Vue `ref`, `reactive`, `computed`, `v-model`, `v-for`
 - Exercise: add a Body style filter on the inventory page yourself
+
+### Day 4 — Vehicle details
+
+- `/vehicles/:id` details page: gallery, price, specs, features, dealer and store location
+- Cards and **View details** go to the page; the heart does not
+- Actions: favorite, compare, payment estimate, test-drive request, trade-in (jumps to the homepage form)
+- Concepts: dynamic routes, params, query, `useRoute`, `useRouter`, `router.push`, route `props: true`, props vs emits
+- Exercise: add Previous / Next vehicle links on the details page
 
 ## Learning notes
 

@@ -56,7 +56,13 @@ watch(
         <div id="mainNav" ref="navCollapse" class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto mb-3 mb-lg-0">
             <li class="nav-item">
-              <RouterLink class="nav-link" active-class="active" :to="{ name: 'vehicles' }">
+              <RouterLink
+                class="nav-link"
+                :class="{
+                  active: route.name === 'vehicles' || route.name === 'vehicle-details',
+                }"
+                :to="{ name: 'vehicles' }"
+              >
                 Inventory
               </RouterLink>
             </li>
