@@ -138,6 +138,15 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 4. How do loading, empty and error differ on this page?
 5. Why is `/account` behind a route guard?
 
+**[Day 11 — CMS application](#day-11--cms-application)**
+
+1. Why are the CMS and the Client separate applications?
+2. Walk Editor → Save draft → Review → Approve → Publish → Client.
+3. What is the difference between a draft and a published item?
+4. Role vs permission in the CMS — who can save, who can approve, who can publish?
+5. Why can't the CMS Pinia store just update the client homepage in memory?
+6. What belongs in a reusable table or badge, and what stays unique per content type?
+
 ---
 
 ## Day 1 — Project foundation
@@ -783,3 +792,29 @@ Loading is “the GET is in flight.” Empty is “the GET worked and this list 
 ### 5. Why is `/account` behind a route guard?
 
 It is **your** profile and **your** bookings. A guest is not authenticated, so the guard sends them to `/login?redirect=/account`. That is the same Day 9 rule, now protecting a real hub instead of a stub.
+
+## Day 11 — CMS application
+
+### 1. Why are the CMS and the Client separate applications?
+
+The client is the **shopper site**. The CMS is the **content desk**. Different people use them (Casey edits copy; Alex buys a truck). They ship on different schedules: a typo in an offer should not wait on an inventory release. Two Vite apps also keep the shopper bundle free of editor tables and workflow buttons.
+
+### 2. Walk Editor → Save draft → Review → Approve → Publish → Client.
+
+Casey (`cms.draft`) writes an offer and **Save draft** (`PUT`). **Submit for review** moves it to `in_review`. Riley (`cms.review`) **Approve**s it. Jordan (`cms.publish`) **Publish**es. The mock API writes `client/public/cms-published.json`. The client `publishedStore` fetches that file on boot. Refresh port 5173 and the new offer is on the homepage.
+
+### 3. What is the difference between a draft and a published item?
+
+A **draft** exists only in the CMS mock DB. Shoppers never see it. **Published** is the only status the client reads. In-review and approved are staff states in between. Preview in the CMS shows the card; it does not put the card on 5173.
+
+### 4. Role vs permission in the CMS — who can save, who can approve, who can publish?
+
+The **role** is the job title (Editor, Reviewer, Admin). The **permission** is the switch the button checks: `cms.draft`, `cms.review`, `cms.publish`. Admin has `*`, so they can do every step. A Vue `v-if` is not security — the mock API also returns 403.
+
+### 5. Why can't the CMS Pinia store just update the client homepage in memory?
+
+They are two browsers, two origins (`5173` vs `5181`). Pinia and `localStorage` do not cross ports. In class we write a JSON file the client can `fetch`. In production both apps would call the same .NET API and the client would `GET` only published records.
+
+### 6. What belongs in a reusable table or badge, and what stays unique per content type?
+
+`DataTable` and `StatusBadge` do not know what an offer is. The **content type** owns columns and form fields (`contentTypes.js`). The **workflow** owns which button appears. Same pattern as Day 10: reuse the widget, keep the config unique.

@@ -36,3 +36,7 @@ Mock API  (or later .NET)
 Reusable on `/account`: `DataTable`, `StatusBadge`, `EmptyState`, `LoadingState`, `ErrorState`, `Modal`, `Pagination`.
 
 Unique: the column lists, the confirm copy, and which store action runs after the modal.
+
+## Published CMS content
+
+The client still never talks to the CMS mock router. After Admin publishes, `publishedStore` reads `/cms-published.json` (written by the CMS Vite bridge). Offers, banners, nav, footer and SEO use that snapshot when it has data; otherwise they keep the Day 2 seed modules.

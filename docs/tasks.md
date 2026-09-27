@@ -21,6 +21,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 8 | Customer business flows | ✅ Done | — |
 | 9 | Authentication and authorization | ✅ Done | — |
 | 10 | Customer account | ✅ Done | — |
+| 11 | CMS application | ✅ Done | — |
 
 ---
 
@@ -36,7 +37,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 4 | Layout with header, footer and sticky footer | ✅ | `client/src/layouts/MainLayout.vue` |
 | 5 | Home route and lazy-loaded 404 page | ✅ | `client/src/router/index.js` |
 | 6 | Learn: Vue 3, Vite, SFC, `<script setup>`, Composition API, ES modules, Bootstrap grid and breakpoints | ✅ | [Q&A Day 1](interview-qa.md#day-1--project-foundation) |
-| 7 | Create the `cms` app | ⏸️ | Moved to [Roadmap](#roadmap-proposed) |
+| 7 | Create the `cms` app | ✅ | Done on Day 11 — `cms/` on port 5181 |
 | 8 | Create the `admin` app | ⏸️ | Moved to [Roadmap](#roadmap-proposed) |
 
 ---
@@ -213,6 +214,22 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 11 — CMS application
+
+**Goal:** a separate Vue app that manages website content (not inventory or bookings), with a draft → review → approve → publish pipeline.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Scaffold `cms/` (Vue 3, Vite, Bootstrap, Router, Pinia) on port 5181 | ✅ | `cms/` |
+| 2 | Routes: `/cms/login`, dashboard, homepage, pages, banners, offers, media, SEO, navigation, footer | ✅ | `cms/src/router/index.js` |
+| 3 | Sidebar, dashboard counts, collection tables, edit forms, preview | ✅ | `layouts/`, `views/`, `components/` |
+| 4 | Workflow: Editor save draft → submit → Reviewer approve → Admin publish | ✅ | `data/workflow.js`, `WorkflowBar.vue` |
+| 5 | Mock CMS API + permissions (`cms.draft` / `cms.review` / `cms.publish`) | ✅ | `cms/src/api/mock/` |
+| 6 | Publish writes `client/public/cms-published.json`; client reads it | ✅ | `vite.config.js`, `publishedStore.js` |
+| 7 | Learn: why CMS ≠ Client, CRUD, badges, draft vs published | ✅ | [Q&A Day 11](interview-qa.md#day-11--cms-application) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -239,6 +256,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 18 | Answer the Day 9 questions in [interview-qa.md](interview-qa.md#day-9--authentication-and-authorization) out loud | Day 9 | ⬜ |
 | 19 | Add a Notes column to the service table on `/account` | Day 10 | ⬜ |
 | 20 | Explain the Client architecture in your own words, then answer the Day 10 questions | Day 10 | ⬜ |
+| 21 | Add a Notes field on CMS offers and show it on the client offer card after publish | Day 11 | ⬜ |
+| 22 | Answer the Day 11 questions in [interview-qa.md](interview-qa.md#day-11--cms-application) out loud | Day 11 | ⬜ |
 
 ---
 
@@ -258,9 +277,10 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 8 | Filter choices in the URL are read once, not kept in sync as you type | Enough to deep-link from the homepage; a full query-string sync is later work | Pinia / inventory polish |
 | 9 | No tests, no linting | Not covered yet | Testing day |
 | 10 | Mock data lives in memory; refresh of the tab keeps it, restarting Vite resets POST/PATCH/DELETE | There is no real database | .NET API day |
-| 11 | Homepage offers and locations still read local modules | Service and trade-in POSTs live on their own pages | Offers exercise / later days |
-| 12 | CMS and Admin are guarded stubs, not separate Vite apps | Day 9 is auth, not those products | CMS / Admin app days |
+| 11 | Homepage locations still read local modules | Offers/banners/nav/footer/SEO can come from `cms-published.json` | Locations later / .NET |
+| 12 | ~~CMS is a guarded stub~~ Admin is still a guarded stub | CMS is now `cms/` on 5181 | Admin app day |
 | 13 | Mock auth: plain-text passwords, unsigned tokens, Vue-only guards | Classroom login so you can learn roles | Real .NET auth |
+| 14 | CMS pages and media are in the published snapshot but the client has no `/about` route yet | Day 11 taught the pipeline, not a page renderer | Later / .NET |
 
 ---
 
@@ -275,7 +295,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | 8 | ~~Customer flows~~ | ✅ Done: test drive, service, trade-in |
 | 9 | ~~Auth~~ | ✅ Done: mock login, roles, guards for /account /cms /admin |
 | 10 | ~~Customer account~~ | ✅ Done: /account hub with shared table/state widgets |
-| 11 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
+| 11 | ~~CMS app~~ | ✅ Done: `cms/` on 5181, draft → publish → client |
 | 12 | Admin app | Create `admin/` (port 5182): inventory table and leads |
 | 13 | Testing | Vitest unit tests and Playwright end-to-end tests |
 | 14 | Performance and production | Lazy loading, image optimisation, build and deploy |
@@ -284,7 +304,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 
 ## End-of-day checklist
 
-1. Build passes: `cd client` then `npm run build`.
+1. Build passes: `cd client` then `npm run build`. After Day 11 also `cd cms` then `npm run build`.
 2. Mark finished tasks ✅ above and add the new day's section.
 3. Move anything unfinished to **Known limitations** or the **Roadmap**.
 4. Add the day's questions to [interview-qa.md](interview-qa.md).

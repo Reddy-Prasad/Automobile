@@ -7,7 +7,7 @@ The platform is planned as three separate Vue applications that share the same s
 | App | Purpose | Status | Dev URL |
 |---|---|---|---|
 | `client/` | Public dealership website for shoppers | In progress | http://localhost:5173 |
-| `cms/` | Content management (offers, banners, pages) | Planned | http://localhost:5181 |
+| `cms/` | Content management (offers, banners, pages) | Day 11 | http://localhost:5181 |
 | `admin/` | Dealer/admin dashboard (inventory, leads) | Planned | http://localhost:5182 |
 
 There is no real backend yet. Views talk to services through a mock REST layer in `client/src/api/`, seeded from `client/src/data/`. Set `VITE_USE_MOCK=false` later to point the same services at a .NET API.
@@ -27,9 +27,14 @@ Requires Node.js `^20.19.0 || >=22.12.0`.
 ```bash
 cd client
 npm install
-npm run dev       # start dev server at http://localhost:5173
+npm run dev       # shopper site at http://localhost:5173
 npm run build     # production build into client/dist
 npm run preview   # serve the production build locally
+
+# second terminal — CMS (Day 11)
+cd cms
+npm install
+npm run dev       # content desk at http://localhost:5181/cms/login
 ```
 
 ## Project structure (client)
@@ -60,6 +65,24 @@ client/
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
+
+Published CMS copy is `client/public/cms-published.json`. The CMS `npm run dev` server writes that file when Admin clicks Publish. Restarting the CMS tab resets the in-memory mock; the JSON file is what the client keeps.
+
+## Project structure (cms)
+
+```
+cms/
+├── index.html
+├── vite.config.js          Port 5181 + publish-snapshot bridge
+└── src/
+    ├── main.js
+    ├── api/                request() + mock REST + workflow
+    ├── data/               roles, users, content types, workflow
+    ├── stores/             authStore, contentStore
+    ├── layouts/CmsLayout.vue
+    ├── components/         Sidebar, table, badge, modal, preview, workflow bar
+    └── views/              Login, dashboard, collection list, editor
+```
 
 ## Daily progress
 
@@ -144,6 +167,15 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Shared widgets: DataTable, StatusBadge, EmptyState, LoadingState, ErrorState, Modal, Pagination
 - `accountStore` + `useAccount`; `/requests` now reads the same store
 - Exercise: add a Notes column to the service table
+
+### Day 11 — CMS application
+
+- Separate `cms/` app on port 5181. It manages website copy (offers, banners, pages, media, SEO, nav, footer), not inventory or bookings
+- Routes: `/cms/login`, `/cms/dashboard`, `/cms/homepage`, `/cms/pages`, `/cms/banners`, `/cms/offers`, `/cms/media`, `/cms/seo`, `/cms/navigation`, `/cms/footer`
+- Workflow: Editor save draft → submit → Reviewer approve → Admin publish. Mock API writes `client/public/cms-published.json`; the client homepage reads it
+- Same classroom stack: Vue 3, Vite, Pinia, Vue Router, Bootstrap, `request()` + in-memory mock
+- Demo staff (password `Password1!`): Casey editor, Riley reviewer, Jordan admin
+- Exercise: add a Notes field on CMS offers and show it on the client card after publish
 
 ## Learning notes
 
