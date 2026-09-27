@@ -130,6 +130,14 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 7. What happens if a CUSTOMER opens `/admin`?
 8. What would change with a real .NET authentication API?
 
+**[Day 10 — Customer account](#day-10--customer-account)**
+
+1. Walk `/account` from the view down to the mock API.
+2. What belongs in a reusable `DataTable`, and what stays in the page?
+3. Why does `/account` use both a composable and Pinia?
+4. How do loading, empty and error differ on this page?
+5. Why is `/account` behind a route guard?
+
 ---
 
 ## Day 1 — Project foundation
@@ -753,3 +761,25 @@ They are already authenticated, so they do **not** go to login. The guard sees `
 ### 8. What would change with a real .NET authentication API?
 
 `VITE_USE_MOCK=false`. `http.js` `fetch`es the same `/auth/*` paths. Passwords are hashed in SQL. The token is a signed JWT or an HTTP-only cookie. Vue views and `authStore` stay. Every write endpoint still checks the token on the server.
+
+## Day 10 — Customer account
+
+### 1. Walk `/account` from the view down to the mock API.
+
+`AccountView` → `useAccount.load()` → `accountStore.load()` → `listTestDrives()` (and the other three services) → `request('GET /test-drives')` → mock JSON. Favorites skip the booking services and read `favoriteStore`. The `.vue` file never imports `handleMockRequest`.
+
+### 2. What belongs in a reusable `DataTable`, and what stays in the page?
+
+The table owns columns, rows, and a cell slot. The page owns the column list, the confirm sentence, and which store action runs. A generic “AccountTable” with 20 props would be harder than one table and seven small configs.
+
+### 3. Why does `/account` use both a composable and Pinia?
+
+Pinia is **shared** (favorites, compare, booking lists, the signed-in user). The composable is **this page** (which page of the test-drive table, whether the modal is open). Day 6 rule still holds.
+
+### 4. How do loading, empty and error differ on this page?
+
+Loading is “the GET is in flight.” Empty is “the GET worked and this list is `[]`.” Error is “the GET failed.” A customer with no trade-ins still sees their test drives. One failed `Promise.all` is an error for the booking block, not for profile.
+
+### 5. Why is `/account` behind a route guard?
+
+It is **your** profile and **your** bookings. A guest is not authenticated, so the guard sends them to `/login?redirect=/account`. That is the same Day 9 rule, now protecting a real hub instead of a stub.

@@ -20,6 +20,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 7 | Finance calculator and application | ✅ Done | — |
 | 8 | Customer business flows | ✅ Done | — |
 | 9 | Authentication and authorization | ✅ Done | — |
+| 10 | Customer account | ✅ Done | — |
 
 ---
 
@@ -197,6 +198,21 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 10 — Customer account
+
+**Goal:** `/account` is the signed-in customer hub: profile, favorites, compare, and all booking lists.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Reusable DataTable, StatusBadge, EmptyState, LoadingState, ErrorState, Modal, Pagination | ✅ | `components/common/` |
+| 2 | `accountStore` loads/cancels bookings through services | ✅ | `stores/accountStore.js` |
+| 3 | `useAccount` owns pagination and the confirm modal | ✅ | `composables/useAccount.js` |
+| 4 | `/account` sections + route guard (`requiresAuth`) | ✅ | `AccountView.vue`, `guards.js` |
+| 5 | Seed Alex Rivera’s bookings so tables are not empty | ✅ | `data/accountSeeds.js` |
+| 6 | Learn: layers, reusable vs unique, API states | ✅ | [client-architecture.md](client-architecture.md), [Q&A Day 10](interview-qa.md#day-10--customer-account) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -221,6 +237,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 16 | Answer the Day 8 questions in [interview-qa.md](interview-qa.md#day-8--customer-business-flows) out loud | Day 8 | ⬜ |
 | 17 | Put `meta: { requiresAuth: true }` on `/requests` and confirm a guest is sent to login | Day 9 | ⬜ |
 | 18 | Answer the Day 9 questions in [interview-qa.md](interview-qa.md#day-9--authentication-and-authorization) out loud | Day 9 | ⬜ |
+| 19 | Add a Notes column to the service table on `/account` | Day 10 | ⬜ |
+| 20 | Explain the Client architecture in your own words, then answer the Day 10 questions | Day 10 | ⬜ |
 
 ---
 
@@ -256,10 +274,11 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | 7 | ~~Finance / forms~~ | ✅ Done: `/finance` calculator + validated POST application |
 | 8 | ~~Customer flows~~ | ✅ Done: test drive, service, trade-in |
 | 9 | ~~Auth~~ | ✅ Done: mock login, roles, guards for /account /cms /admin |
-| 10 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
-| 11 | Admin app | Create `admin/` (port 5182): inventory table and leads |
-| 12 | Testing | Vitest unit tests and Playwright end-to-end tests |
-| 13 | Performance and production | Lazy loading, image optimisation, build and deploy |
+| 10 | ~~Customer account~~ | ✅ Done: /account hub with shared table/state widgets |
+| 11 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
+| 12 | Admin app | Create `admin/` (port 5182): inventory table and leads |
+| 13 | Testing | Vitest unit tests and Playwright end-to-end tests |
+| 14 | Performance and production | Lazy loading, image optimisation, build and deploy |
 
 ---
 

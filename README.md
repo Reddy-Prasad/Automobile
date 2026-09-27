@@ -51,7 +51,7 @@ client/
     ├── data/                  Seed data for the mock DB and UI copy
     ├── utils/                 Formatters, validators, finance and trade-in helpers
     ├── components/
-    │   ├── common/            SectionHeading, ResourceState
+    │   ├── common/            SectionHeading, ResourceState, DataTable, Modal, Pagination
     │   ├── forms/             Shared field, appointment, contact, actions, result
     │   ├── vehicles/          VehicleCard, VehicleGallery, VehicleActions
     │   ├── layout/            AppHeader, AppFooter
@@ -138,12 +138,20 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Token in `sessionStorage`; `http.js` sends `Authorization: Bearer`. This is not production security
 - Exercise: require sign-in on `/requests`
 
+### Day 10 — Customer account
+
+- `/account` (signed-in): profile, favorites, compare, test drives, service, finance, trade-ins
+- Shared widgets: DataTable, StatusBadge, EmptyState, LoadingState, ErrorState, Modal, Pagination
+- `accountStore` + `useAccount`; `/requests` now reads the same store
+- Exercise: add a Notes column to the service table
+
 ## Learning notes
 
 - [Task tracker](docs/tasks.md): what's done, your practice exercises, known limitations and the roadmap. Updated every day.
 - [Interview questions & answers](docs/interview-qa.md): question index for self-testing plus full answers, grouped by day. Updated every day.
 - [API handling and request state](docs/api-handling.md): one page for `http.js` (mock vs real API) and INITIAL / LOADING / SUCCESS / EMPTY / ERROR / Retry.
 - [Authentication and authorization](docs/auth.md): who you are vs what you may do, tokens vs session, what .NET would change.
+- [Client architecture](docs/client-architecture.md): Component → Composable → Store → Service → Mock API.
 
 ## Daily Git workflow
 
