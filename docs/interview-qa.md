@@ -147,6 +147,14 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 5. Why can't the CMS Pinia store just update the client homepage in memory?
 6. What belongs in a reusable table or badge, and what stays unique per content type?
 
+**[Day 12 — Admin application](#day-12--admin-application)**
+
+1. How is Admin different from CMS?
+2. Walk a new vehicle from the Admin form to the client inventory page.
+3. Why does the client still use `vehicleService` instead of reading Admin’s Pinia store?
+4. Draft vs published on a vehicle — who sees what?
+5. Inventory manager vs service manager — what is a permission check for?
+
 ---
 
 ## Day 1 — Project foundation
@@ -818,3 +826,25 @@ They are two browsers, two origins (`5173` vs `5181`). Pinia and `localStorage` 
 ### 6. What belongs in a reusable table or badge, and what stays unique per content type?
 
 `DataTable` and `StatusBadge` do not know what an offer is. The **content type** owns columns and form fields (`contentTypes.js`). The **workflow** owns which button appears. Same pattern as Day 10: reuse the widget, keep the config unique.
+
+## Day 12 — Admin application
+
+### 1. How is Admin different from CMS?
+
+CMS edits **website content** (offers, banners, SEO, nav). Admin runs **business operations** (the lot, leads, test drives, service, finance, users). A reviewer does not price a truck. An inventory manager does not rewrite the footer.
+
+### 2. Walk a new vehicle from the Admin form to the client inventory page.
+
+The form lives in Vue. Submit calls `vehicleService.createVehicle()` → `request('POST /vehicles')` → admin mock (draft). Publish calls `POST /vehicles/:id/publish`. The mock writes `admin-published.json`. The client boots, `applyPublishedInventory()` merges that file into `db.vehicles`, then `vehicleStore` → `vehicleService.listVehicles()` → `GET /vehicles` returns the new row.
+
+### 3. Why does the client still use `vehicleService` instead of reading Admin’s Pinia store?
+
+Two apps, two origins. The client must keep its own path: view → store → service → mock. The snapshot is only how the mock DB learns about published units. Later, both services hit the same .NET API.
+
+### 4. Draft vs published on a vehicle — who sees what?
+
+**Draft** is on the admin lot only. **Published** is on the shopper lot. Delete is blocked while published. Unpublish pulls extras back off the client after refresh.
+
+### 5. Inventory manager vs service manager — what is a permission check for?
+
+Morgan has `inventory.write` so she can create and publish. Sam has `service.write` so he can move a service job. Neither switch is the other. Admin has `*`. The sidebar hides what you cannot open; the mock still returns 403 if you guess the URL.

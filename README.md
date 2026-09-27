@@ -8,7 +8,7 @@ The platform is planned as three separate Vue applications that share the same s
 |---|---|---|---|
 | `client/` | Public dealership website for shoppers | In progress | http://localhost:5173 |
 | `cms/` | Content management (offers, banners, pages) | Day 11 | http://localhost:5181 |
-| `admin/` | Dealer/admin dashboard (inventory, leads) | Planned | http://localhost:5182 |
+| `admin/` | Dealer/admin dashboard (inventory, leads) | Day 12 | http://localhost:5182 |
 
 There is no real backend yet. Views talk to services through a mock REST layer in `client/src/api/`, seeded from `client/src/data/`. Set `VITE_USE_MOCK=false` later to point the same services at a .NET API.
 
@@ -35,6 +35,11 @@ npm run preview   # serve the production build locally
 cd cms
 npm install
 npm run dev       # content desk at http://localhost:5181/cms/login
+
+# third terminal — Admin (Day 12)
+cd admin
+npm install
+npm run dev       # operations desk at http://localhost:5182/admin/login
 ```
 
 ## Project structure (client)
@@ -66,7 +71,7 @@ client/
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
 
-Published CMS copy is `client/public/cms-published.json`. The CMS `npm run dev` server writes that file when Admin clicks Publish. Restarting the CMS tab resets the in-memory mock; the JSON file is what the client keeps.
+Published CMS copy is `client/public/cms-published.json`. Published inventory is `client/public/admin-published.json`. Each Vite `dev` server writes its file. Restarting a tab resets that app’s in-memory mock; the JSON is what the client keeps.
 
 ## Project structure (cms)
 
@@ -82,6 +87,19 @@ cms/
     ├── layouts/CmsLayout.vue
     ├── components/         Sidebar, table, badge, modal, preview, workflow bar
     └── views/              Login, dashboard, collection list, editor
+```
+
+## Project structure (admin)
+
+```
+admin/
+├── index.html
+├── vite.config.js          Port 5182 + publish-inventory bridge
+└── src/
+    ├── api/                request() + mock REST
+    ├── services/           vehicleService, operationsService
+    ├── stores/             authStore, vehicleStore, operationsStore
+    └── views/              dashboard, inventory CRUD, operations boards
 ```
 
 ## Daily progress
@@ -176,6 +194,15 @@ cms/
 - Same classroom stack: Vue 3, Vite, Pinia, Vue Router, Bootstrap, `request()` + in-memory mock
 - Demo staff (password `Password1!`): Casey editor, Riley reviewer, Jordan admin
 - Exercise: add a Notes field on CMS offers and show it on the client card after publish
+
+### Day 12 — Admin application
+
+- Separate `admin/` app on port 5182. It manages **operations**: inventory, customers, leads, test drives, service, finance, trade-ins, dealers, users, roles, reports, settings
+- Inventory CRUD: create, view, edit, delete, publish. Draft stays off the shopper lot
+- Flow: Admin form → Vue → `vehicleService` → mock API → publish → `admin-published.json` → client mock → `vehicleService` → vehicle appears
+- Search, filters, pagination, status badges, role permissions (`inventory.write` vs `service.write`)
+- Demo staff: Jordan admin, Morgan inventory, Sam service. Password `Password1!`
+- Exercise: change a published price in Admin and confirm the client details page updates after refresh
 
 ## Learning notes
 

@@ -22,6 +22,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 9 | Authentication and authorization | ✅ Done | — |
 | 10 | Customer account | ✅ Done | — |
 | 11 | CMS application | ✅ Done | — |
+| 12 | Admin application | ✅ Done | — |
 
 ---
 
@@ -38,7 +39,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 5 | Home route and lazy-loaded 404 page | ✅ | `client/src/router/index.js` |
 | 6 | Learn: Vue 3, Vite, SFC, `<script setup>`, Composition API, ES modules, Bootstrap grid and breakpoints | ✅ | [Q&A Day 1](interview-qa.md#day-1--project-foundation) |
 | 7 | Create the `cms` app | ✅ | Done on Day 11 — `cms/` on port 5181 |
-| 8 | Create the `admin` app | ⏸️ | Moved to [Roadmap](#roadmap-proposed) |
+| 8 | Create the `admin` app | ✅ | Done on Day 12 — `admin/` on port 5182 |
 
 ---
 
@@ -230,6 +231,22 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 12 — Admin application
+
+**Goal:** a separate Vue app for **business operations**, with Inventory CRUD that can publish a vehicle onto the client lot.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Scaffold `admin/` (Vue 3, Vite, Bootstrap, Router, Pinia) on port 5182 | ✅ | `admin/` |
+| 2 | Dashboard, inventory, customers, leads, bookings, dealers, users, roles, reports, settings | ✅ | `admin/src/views/` |
+| 3 | Inventory create / view / edit / delete / publish | ✅ | `InventoryView.vue`, `VehicleFormView.vue`, `VehicleView.vue` |
+| 4 | Search, filters, pagination, status badges, role permissions | ✅ | inventory table + guards |
+| 5 | `vehicleService` → mock API; publish writes `admin-published.json` | ✅ | `admin/src/services/vehicleService.js` |
+| 6 | Client mock merges the snapshot so `listVehicles()` returns the new unit | ✅ | `client/src/api/mock/db.js` |
+| 7 | Learn: CMS vs Admin, operations CRUD | ✅ | [Q&A Day 12](interview-qa.md#day-12--admin-application) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -258,6 +275,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 20 | Explain the Client architecture in your own words, then answer the Day 10 questions | Day 10 | ⬜ |
 | 21 | Add a Notes field on CMS offers and show it on the client offer card after publish | Day 11 | ⬜ |
 | 22 | Answer the Day 11 questions in [interview-qa.md](interview-qa.md#day-11--cms-application) out loud | Day 11 | ⬜ |
+| 23 | On a published vehicle, change price in Admin and confirm the client details page updates after refresh | Day 12 | ⬜ |
+| 24 | Answer the Day 12 questions in [interview-qa.md](interview-qa.md#day-12--admin-application) out loud | Day 12 | ⬜ |
 
 ---
 
@@ -278,9 +297,10 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 9 | No tests, no linting | Not covered yet | Testing day |
 | 10 | Mock data lives in memory; refresh of the tab keeps it, restarting Vite resets POST/PATCH/DELETE | There is no real database | .NET API day |
 | 11 | Homepage locations still read local modules | Offers/banners/nav/footer/SEO can come from `cms-published.json` | Locations later / .NET |
-| 12 | ~~CMS is a guarded stub~~ Admin is still a guarded stub | CMS is now `cms/` on 5181 | Admin app day |
+| 12 | ~~CMS and Admin are guarded stubs~~ | Both are separate Vite apps | Done (Days 11–12) |
 | 13 | Mock auth: plain-text passwords, unsigned tokens, Vue-only guards | Classroom login so you can learn roles | Real .NET auth |
 | 14 | CMS pages and media are in the published snapshot but the client has no `/about` route yet | Day 11 taught the pipeline, not a page renderer | Later / .NET |
+| 15 | Admin settings save only in the admin mock | Client still reads `dealer.js` | .NET API day |
 
 ---
 
@@ -296,7 +316,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | 9 | ~~Auth~~ | ✅ Done: mock login, roles, guards for /account /cms /admin |
 | 10 | ~~Customer account~~ | ✅ Done: /account hub with shared table/state widgets |
 | 11 | ~~CMS app~~ | ✅ Done: `cms/` on 5181, draft → publish → client |
-| 12 | Admin app | Create `admin/` (port 5182): inventory table and leads |
+| 12 | ~~Admin app~~ | ✅ Done: `admin/` on 5182, inventory CRUD → client lot |
 | 13 | Testing | Vitest unit tests and Playwright end-to-end tests |
 | 14 | Performance and production | Lazy loading, image optimisation, build and deploy |
 
@@ -304,7 +324,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 
 ## End-of-day checklist
 
-1. Build passes: `cd client` then `npm run build`. After Day 11 also `cd cms` then `npm run build`.
+1. Build passes: `cd client` then `npm run build`. Also `cd cms` and `cd admin`.
 2. Mark finished tasks ✅ above and add the new day's section.
 3. Move anything unfinished to **Known limitations** or the **Roadmap**.
 4. Add the day's questions to [interview-qa.md](interview-qa.md).

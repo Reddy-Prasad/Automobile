@@ -39,4 +39,8 @@ Unique: the column lists, the confirm copy, and which store action runs after th
 
 ## Published CMS content
 
-The client still never talks to the CMS mock router. After Admin publishes, `publishedStore` reads `/cms-published.json` (written by the CMS Vite bridge). Offers, banners, nav, footer and SEO use that snapshot when it has data; otherwise they keep the Day 2 seed modules.
+The client still never talks to the CMS mock router. After a CMS admin publishes, `publishedStore` reads `/cms-published.json` (written by the CMS Vite bridge). Offers, banners, nav, footer and SEO use that snapshot when it has data; otherwise they keep the Day 2 seed modules.
+
+## Published inventory (Admin)
+
+After an inventory manager publishes, `applyPublishedInventory()` merges `/admin-published.json` into the client mock `db.vehicles`. Shoppers still load cars through `vehicleStore` → `vehicleService` → `GET /vehicles`. The view does not import the Admin app.
