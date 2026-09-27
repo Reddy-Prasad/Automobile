@@ -1,3 +1,4 @@
+// Mock vs .NET is decided only here. Views and services stay the same.
 import { getStoredToken } from '@/auth/session'
 import { ApiError } from './errors'
 import { failNextRequest, mockConfig, randomDelay, wait } from './mock/config'

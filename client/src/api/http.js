@@ -1,3 +1,5 @@
+// Mock vs .NET is decided only here. Views and services stay the same.
+// VITE_USE_MOCK=false + VITE_API_BASE_URL → fetch. See docs/dotnet-for-ui.md.
 import { getStoredToken } from '@/auth/session'
 import { ApiError } from './errors'
 import { failNextRequest, mockConfig, randomDelay, wait } from './mock/config'
