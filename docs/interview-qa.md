@@ -119,6 +119,17 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 7. Why does trade-in skip AppointmentFields?
 8. Walk Submit on `/service` from the button to the mock API.
 
+**[Day 9 — Authentication and authorization](#day-9--authentication-and-authorization)**
+
+1. What is the difference between authentication and authorization?
+2. What is a route guard, and when does it run?
+3. Token vs session — what does AutoDrive store where?
+4. Role vs permission — why have both?
+5. Why is a Vue guard not enough for security?
+6. Walk Sign in from the button to `authStore` to the mock API.
+7. What happens if a CUSTOMER opens `/admin`?
+8. What would change with a real .NET authentication API?
+
 ---
 
 ## Day 1 — Project foundation
@@ -700,3 +711,45 @@ A trade-in is an **estimate request**, not a store visit. Date, time and locatio
 ### 8. Walk Submit on `/service` from the button to the mock API.
 
 `ServiceView` `@submit` → `useServiceForm.submit()` (from `useFormSubmit`) → `validateServiceBooking` → `createServiceBooking()` → `request('POST', /service-bookings)` → mock delay + 201 (or 400/500) → composable sets `success` or `error` → `FormResult`. The `.vue` file never imports `handleMockRequest`.
+
+## Day 9 — Authentication and authorization
+
+### 1. What is the difference between authentication and authorization?
+
+**Authentication** answers “who are you?” — email + password → token.  
+**Authorization** answers “what may you do?” — that user is a CUSTOMER, so `/admin` is 403.
+
+You can pass login and still fail authorization.
+
+### 2. What is a route guard, and when does it run?
+
+A function Vue Router runs **before** the new page is shown (`beforeEach`). AutoDrive waits for `authStore.restoreSession()`, then:
+
+- not signed in + `requiresAuth` → `/login?redirect=…`
+- signed in + wrong `meta.roles` → `/forbidden`
+- signed in + `guestOnly` (login/register) → that user’s workspace
+
+### 3. Token vs session — what does AutoDrive store where?
+
+The **token** is the string the API issued (`mock.1.1727…`).  
+The **session** is token + user in `sessionStorage` for this tab. `http.js` copies the token into `Authorization: Bearer`. Close the tab and the session is gone. This is a classroom stand-in, not a signed JWT.
+
+### 4. Role vs permission — why have both?
+
+A **role** is a job (`CMS_EDITOR`). A **permission** is a verb (`cms.draft`). The guard checks roles so whole apps stay closed. Buttons inside CMS check permissions so an editor cannot publish. Admin has `*`.
+
+### 5. Why is a Vue guard not enough for security?
+
+Anyone can change the URL or edit `sessionStorage`. The guard only hides pages. A real API must reject `DELETE /vehicles/1` if the token’s role is CUSTOMER. Vue is UX. The server is security.
+
+### 6. Walk Sign in from the button to `authStore` to the mock API.
+
+`LoginView` → `useLoginForm.submit()` → `authStore.login()` → `authService.login()` → `request('POST /auth/login')` → mock checks email/password → `{ token, user }` → `sessionStorage` + store → guard-friendly redirect to `/account`, `/cms` or `/admin`.
+
+### 7. What happens if a CUSTOMER opens `/admin`?
+
+They are already authenticated, so they do **not** go to login. The guard sees `ADMIN | INVENTORY_MANAGER | SERVICE_MANAGER` and sends them to `/forbidden`. That page says “authorization,” not “wrong password.”
+
+### 8. What would change with a real .NET authentication API?
+
+`VITE_USE_MOCK=false`. `http.js` `fetch`es the same `/auth/*` paths. Passwords are hashed in SQL. The token is a signed JWT or an HTTP-only cookie. Vue views and `authStore` stay. Every write endpoint still checks the token on the server.

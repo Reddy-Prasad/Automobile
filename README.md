@@ -44,7 +44,8 @@ client/
     ├── router/index.js        Routes, 404 catch-all, smooth scroll to #hash links
     ├── layouts/MainLayout.vue Header + <RouterView /> + footer
     ├── api/                   HTTP client, request log, in-memory mock REST router
-    ├── services/              vehicle, customer, testDrive, finance, service, trade-in
+    ├── auth/                  sessionStorage token helpers (not production security)
+    ├── services/              vehicle, customer, testDrive, finance, service, trade-in, auth
     ├── composables/           request helpers + useFormSubmit / flow forms
     ├── stores/                Pinia: vehicles, auth, favorites, compare
     ├── data/                  Seed data for the mock DB and UI copy
@@ -55,7 +56,7 @@ client/
     │   ├── vehicles/          VehicleCard, VehicleGallery, VehicleActions
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 Home, inventory, details, finance, test-drive, service, trade-in, saved, compare, requests, credits, 404
+    └── views/                 Home, inventory, details, finance, flows, login, account, cms, admin, 403, 404
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
@@ -129,11 +130,20 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Submit stays disabled until the form is complete; Reset and Simulate API error on each page
 - Exercise: add a Notes field to the service booking POST
 
+### Day 9 — Authentication and authorization
+
+- Mock login, register, logout and `GET /auth/me` through `authStore` (not a one-click header sign-in)
+- Roles: CUSTOMER, CMS_EDITOR, CMS_REVIEWER, ADMIN, INVENTORY_MANAGER, SERVICE_MANAGER
+- Guards: guest → `/login`, wrong role → `/forbidden`. Workspaces: `/account`, `/cms`, `/admin`
+- Token in `sessionStorage`; `http.js` sends `Authorization: Bearer`. This is not production security
+- Exercise: require sign-in on `/requests`
+
 ## Learning notes
 
 - [Task tracker](docs/tasks.md): what's done, your practice exercises, known limitations and the roadmap. Updated every day.
 - [Interview questions & answers](docs/interview-qa.md): question index for self-testing plus full answers, grouped by day. Updated every day.
 - [API handling and request state](docs/api-handling.md): one page for `http.js` (mock vs real API) and INITIAL / LOADING / SUCCESS / EMPTY / ERROR / Retry.
+- [Authentication and authorization](docs/auth.md): who you are vs what you may do, tokens vs session, what .NET would change.
 
 ## Daily Git workflow
 

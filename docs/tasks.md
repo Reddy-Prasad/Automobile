@@ -19,6 +19,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 6 | Pinia and state management | ✅ Done | — |
 | 7 | Finance calculator and application | ✅ Done | — |
 | 8 | Customer business flows | ✅ Done | — |
+| 9 | Authentication and authorization | ✅ Done | — |
 
 ---
 
@@ -180,6 +181,22 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 9 — Authentication and authorization
+
+**Goal:** mock login/register/logout/me, then protect `/account`, `/cms` and `/admin` by role. This is not production security.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Roles + permissions + demo users | ✅ | `data/roles.js`, `data/users.js` |
+| 2 | Mock `POST /auth/login`, `register`, `logout`, `GET /auth/me` | ✅ | `api/mock/router.js` |
+| 3 | Token in `sessionStorage`; `http.js` sends `Authorization: Bearer` | ✅ | `auth/session.js`, `http.js` |
+| 4 | `authStore`: login, register, logout, restore, `can()`, roles | ✅ | `stores/authStore.js` |
+| 5 | Route guards: guest-only, requiresAuth, roles → login or 403 | ✅ | `router/guards.js` |
+| 6 | `/login`, `/register`, `/account`, `/cms`, `/admin`, `/forbidden` | ✅ | `views/` |
+| 7 | Learn: authentication vs authorization; mock vs .NET | ✅ | [auth.md](auth.md), [Q&A Day 9](interview-qa.md#day-9--authentication-and-authorization) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -202,6 +219,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 14 | Answer the Day 7 questions in [interview-qa.md](interview-qa.md#day-7--finance-calculator-and-application) out loud | Day 7 | ⬜ |
 | 15 | Add a Notes textarea to the service form and send it in the POST body | Day 8 | ⬜ |
 | 16 | Answer the Day 8 questions in [interview-qa.md](interview-qa.md#day-8--customer-business-flows) out loud | Day 8 | ⬜ |
+| 17 | Put `meta: { requiresAuth: true }` on `/requests` and confirm a guest is sent to login | Day 9 | ⬜ |
+| 18 | Answer the Day 9 questions in [interview-qa.md](interview-qa.md#day-9--authentication-and-authorization) out loud | Day 9 | ⬜ |
 
 ---
 
@@ -222,6 +241,8 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 9 | No tests, no linting | Not covered yet | Testing day |
 | 10 | Mock data lives in memory; refresh of the tab keeps it, restarting Vite resets POST/PATCH/DELETE | There is no real database | .NET API day |
 | 11 | Homepage offers and locations still read local modules | Service and trade-in POSTs live on their own pages | Offers exercise / later days |
+| 12 | CMS and Admin are guarded stubs, not separate Vite apps | Day 9 is auth, not those products | CMS / Admin app days |
+| 13 | Mock auth: plain-text passwords, unsigned tokens, Vue-only guards | Classroom login so you can learn roles | Real .NET auth |
 
 ---
 
@@ -234,9 +255,9 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | 6 | ~~Pinia~~ | ✅ Done: vehicle / auth / favorite / compare stores |
 | 7 | ~~Finance / forms~~ | ✅ Done: `/finance` calculator + validated POST application |
 | 8 | ~~Customer flows~~ | ✅ Done: test drive, service, trade-in |
-| 9 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
-| 10 | Admin app | Create `admin/` (port 5182): inventory table and leads |
-| 11 | Auth | Login, route guards, role-based access |
+| 9 | ~~Auth~~ | ✅ Done: mock login, roles, guards for /account /cms /admin |
+| 10 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
+| 11 | Admin app | Create `admin/` (port 5182): inventory table and leads |
 | 12 | Testing | Vitest unit tests and Playwright end-to-end tests |
 | 13 | Performance and production | Lazy loading, image optimisation, build and deploy |
 

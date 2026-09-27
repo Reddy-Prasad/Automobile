@@ -22,6 +22,7 @@ Every service already calls one function:
 ```js
 request('/vehicles')
 request('/vehicles/1', { method: 'PATCH', body: { saved: true } })
+request('/auth/me')  // http.js adds Authorization: Bearer <token> when a session exists
 ```
 
 That function lives in **`client/src/api/http.js`**. Mock or real .NET is decided **only there**:
