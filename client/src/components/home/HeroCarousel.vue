@@ -1,8 +1,9 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { Carousel } from 'bootstrap'
+import { usePublishedStore } from '@/stores/publishedStore'
 
-const slides = [
+const fallbackSlides = [
   {
     id: 'rav4',
     theme: 'hero-slide--navy',
@@ -34,6 +35,29 @@ const slides = [
     secondary: { label: 'Find a location', hash: '#locations' },
   },
 ]
+
+function bannerToSlide(banner) {
+  if (banner.primary) return banner
+  const target = banner.primaryHash || '#offers'
+  const primary = target.startsWith('#')
+    ? { label: banner.primaryLabel, hash: target }
+    : { label: banner.primaryLabel, name: target }
+  return {
+    id: banner.id,
+    theme: banner.theme,
+    icon: banner.icon,
+    eyebrow: banner.eyebrow,
+    title: banner.title,
+    text: banner.text,
+    primary,
+    secondary: { label: 'See all offers', hash: '#offers' },
+  }
+}
+
+const published = usePublishedStore()
+const slides = computed(() =>
+  published.banners ? published.banners.map(bannerToSlide) : fallbackSlides,
+)
 
 function slideTo(action) {
   if (action.name) return { name: action.name }

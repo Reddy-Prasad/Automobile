@@ -1,8 +1,21 @@
 <script setup>
+import { computed } from 'vue'
 import { dealer, locations } from '@/data/dealer'
 import { mainNav, navLinkTo } from '@/data/navigation'
+import { usePublishedStore } from '@/stores/publishedStore'
 
 const currentYear = new Date().getFullYear()
+const published = usePublishedStore()
+const shopNav = computed(() => published.navigation ?? mainNav)
+const contact = computed(() => ({
+  blurb: published.footer?.blurb ?? `${dealer.tagline}.`,
+  phone: published.footer?.phone ?? dealer.phone,
+  phoneHref: published.footer?.phone
+    ? `tel:${published.footer.phone.replace(/\D/g, '')}`
+    : dealer.phoneHref,
+  email: published.footer?.email ?? dealer.email,
+  hours: published.footer?.hours ?? dealer.hoursSummary,
+}))
 </script>
 
 <template>
@@ -13,7 +26,7 @@ const currentYear = new Date().getFullYear()
           <p class="h5 fw-bold text-white">
             <i class="bi bi-car-front-fill me-2 text-warning"></i>{{ dealer.name }}
           </p>
-          <p class="small">{{ dealer.tagline }}.</p>
+          <p class="small">{{ contact.blurb }}</p>
           <div class="d-flex gap-3 fs-5">
             <a
               v-for="network in dealer.social"
@@ -80,7 +93,7 @@ const currentYear = new Date().getFullYear()
                 Sign in
               </RouterLink>
             </li>
-            <li v-for="link in mainNav" :key="link.label" class="mb-1">
+            <li v-for="link in shopNav" :key="link.label" class="mb-1">
               <RouterLink
                 class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"
                 :to="navLinkTo(link)"
@@ -107,15 +120,15 @@ const currentYear = new Date().getFullYear()
           <p class="text-white fw-semibold mb-2">Contact</p>
           <p class="small mb-1">
             <i class="bi bi-telephone me-2"></i>
-            <a class="link-light text-decoration-none" :href="dealer.phoneHref">{{ dealer.phone }}</a>
+            <a class="link-light text-decoration-none" :href="contact.phoneHref">{{ contact.phone }}</a>
           </p>
           <p class="small mb-1">
             <i class="bi bi-envelope me-2"></i>
-            <a class="link-light text-decoration-none" :href="`mailto:${dealer.email}`">
-              {{ dealer.email }}
+            <a class="link-light text-decoration-none" :href="`mailto:${contact.email}`">
+              {{ contact.email }}
             </a>
           </p>
-          <p class="small mb-0"><i class="bi bi-clock me-2"></i>{{ dealer.hoursSummary }}</p>
+          <p class="small mb-0"><i class="bi bi-clock me-2"></i>{{ contact.hours }}</p>
         </div>
       </div>
 

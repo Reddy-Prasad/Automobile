@@ -9,7 +9,6 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { installGuards } from './router/guards'
-import { usePublishedStore } from './stores/publishedStore'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -18,7 +17,4 @@ app.use(pinia)
 installGuards(router)
 app.use(router)
 
-const published = usePublishedStore(pinia)
-published.load().finally(() => {
-  app.mount('#app')
-})
+app.mount('#app')

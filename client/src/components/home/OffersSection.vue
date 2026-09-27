@@ -1,7 +1,19 @@
 <script setup>
+import { computed } from 'vue'
 import SectionHeading from '@/components/common/SectionHeading.vue'
-import { offers } from '@/data/offers'
+import { offers as seedOffers } from '@/data/offers'
+import { usePublishedStore } from '@/stores/publishedStore'
 import { formatDate } from '@/utils/format'
+
+const published = usePublishedStore()
+const offers = computed(() => published.offers ?? seedOffers)
+const heading = computed(() => ({
+  eyebrow: published.homepage?.eyebrow ?? 'Current offers',
+  title: published.homepage?.headline ?? 'Specials this month',
+  subtitle:
+    published.homepage?.subtitle ??
+    'Manufacturer incentives and dealer savings, updated weekly.',
+}))
 
 const typeBadgeClass = {
   Finance: 'text-bg-primary',
@@ -14,9 +26,9 @@ const typeBadgeClass = {
   <section id="offers" class="py-5 bg-body-tertiary">
     <div class="container">
       <SectionHeading
-        eyebrow="Current offers"
-        title="Specials this month"
-        subtitle="Manufacturer incentives and dealer savings, updated weekly."
+        :eyebrow="heading.eyebrow"
+        :title="heading.title"
+        :subtitle="heading.subtitle"
       />
 
       <div class="row g-4">

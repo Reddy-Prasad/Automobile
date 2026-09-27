@@ -6,26 +6,29 @@ import { useAuthStore } from '@/stores/authStore'
 
 const authStore = useAuthStore()
 const { user, roleName } = storeToRefs(authStore)
+
+const cmsUrl = 'http://localhost:5181/cms/login'
 </script>
 
 <template>
   <section class="bg-dark text-white py-5">
     <div class="container">
-      <p class="text-warning small text-uppercase fw-semibold mb-1">CMS app · /cms</p>
-      <h1 class="h2 fw-bold">Content workspace</h1>
-      <p class="text-white-50 mb-0">
-        Signed in as {{ user.name }} · {{ roleName }}. This is a guarded stub, not the Day 10 CMS
-        app. Offers and banners stay read-only until that app exists.
+      <p class="text-warning small text-uppercase fw-semibold mb-1">Day 11 · separate app</p>
+      <h1 class="h2 fw-bold">CMS lives on port 5181</h1>
+      <p class="text-white-50 mb-3">
+        Signed in here as {{ user.name }} · {{ roleName }}. This client route is only a doorway.
+        Website copy is edited in the CMS Vue app, not on this shopper site.
       </p>
+      <a class="btn btn-warning fw-semibold" :href="cmsUrl">Open AutoDrive CMS</a>
     </div>
   </section>
 
   <section class="py-5">
     <div class="container">
       <SectionHeading
-        eyebrow="Authorization"
-        title="What this role may do"
-        subtitle="Authentication already happened. These cards are permission checks on the same user."
+        eyebrow="Why two apps"
+        title="Content vs shopping"
+        subtitle="The client sells cars. The CMS edits what the client shows. Different users, different deploy cycle."
       />
 
       <div class="row g-4">
@@ -33,12 +36,12 @@ const { user, roleName } = storeToRefs(authStore)
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body p-4">
               <h2 class="h6 fw-bold">Draft offers</h2>
-              <p class="small text-body-secondary">Needs <code>cms.draft</code> (CMS editor).</p>
+              <p class="small text-body-secondary">Needs <code>cms.draft</code> in the CMS app.</p>
               <p v-if="authStore.can(PERMISSIONS.CMS_DRAFT)" class="text-success mb-0">
-                Allowed. A later CMS screen would POST a draft offer here.
+                This role may sign in at {{ cmsUrl }} and save drafts.
               </p>
               <p v-else class="text-body-secondary mb-0">
-                Hidden for this role. A reviewer can read and publish, not draft.
+                A reviewer or shopper does not draft copy in the CMS.
               </p>
             </div>
           </div>
@@ -46,13 +49,13 @@ const { user, roleName } = storeToRefs(authStore)
         <div class="col-md-6">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body p-4">
-              <h2 class="h6 fw-bold">Publish a banner</h2>
-              <p class="small text-body-secondary">Needs <code>cms.publish</code> (CMS reviewer or admin).</p>
+              <h2 class="h6 fw-bold">Publish to the homepage</h2>
+              <p class="small text-body-secondary">Needs <code>cms.publish</code> (admin in the CMS app).</p>
               <p v-if="authStore.can(PERMISSIONS.CMS_PUBLISH)" class="text-success mb-0">
-                Allowed. Admin has <code>*</code>, so this card is true for them too.
+                Admin can publish. The client then reads <code>/cms-published.json</code>.
               </p>
               <p v-else class="text-body-secondary mb-0">
-                An editor can draft but cannot publish.
+                An editor drafts. A reviewer approves. Only admin publishes.
               </p>
             </div>
           </div>
@@ -62,7 +65,7 @@ const { user, roleName } = storeToRefs(authStore)
       <p class="small text-body-secondary mt-4 mb-0">
         <RouterLink :to="{ name: 'account' }">Back to account</RouterLink>
         ·
-        <RouterLink :to="{ name: 'admin' }">Try Admin</RouterLink>
+        <RouterLink :to="{ name: 'admin' }">Admin stub (Day 12)</RouterLink>
       </p>
     </div>
   </section>

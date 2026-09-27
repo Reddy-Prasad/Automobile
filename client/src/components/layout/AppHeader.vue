@@ -1,11 +1,12 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import { Collapse } from 'bootstrap'
 import { dealer } from '@/data/dealer'
 import { mainNav, navLinkTo } from '@/data/navigation'
 import { useAuthStore } from '@/stores/authStore'
+import { usePublishedStore } from '@/stores/publishedStore'
 import { useCompareStore } from '@/stores/compareStore'
 import { useFavoriteStore } from '@/stores/favoriteStore'
 
@@ -19,6 +20,8 @@ const compareStore = useCompareStore()
 const { isSignedIn, displayName } = storeToRefs(authStore)
 const { count: favoriteCount } = storeToRefs(favoriteStore)
 const { count: compareCount } = storeToRefs(compareStore)
+const published = usePublishedStore()
+const marketingNav = computed(() => published.navigation ?? mainNav)
 
 watch(
   () => route.fullPath,
@@ -104,7 +107,7 @@ async function onLogout() {
                 My requests
               </RouterLink>
             </li>
-            <li v-for="link in mainNav" :key="link.label" class="nav-item">
+            <li v-for="link in marketingNav" :key="link.label" class="nav-item">
               <RouterLink
                 class="nav-link"
                 :class="{ active: link.name && route.name === link.name }"

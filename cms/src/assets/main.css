@@ -1,0 +1,18 @@
+html,
+body,
+#app {
+  height: 100%;
+}
+
+.cms-shell {
+  min-height: 100%;
+}
+
+.cms-sidebar {
+  width: 260px;
+}
+
+.cms-preview-frame {
+  border: 1px dashed var(--bs-border-color);
+  background: #f8f9fa;
+}
