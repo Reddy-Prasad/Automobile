@@ -193,6 +193,14 @@ Performance
 13. Why lazy-load `/vehicles/:id` but not the homepage?
 14. What does `loading="lazy"` on a vehicle image actually do?
 
+**[Day 15 — Final integration](#day-15--final-integration)**
+
+1. Why can't Admin Pinia see a test drive the client just POSTed?
+2. Walk FLOW 1 from Admin create to the client card.
+3. What did Day 15 change, and what did it refuse to rewrite?
+
+The 20-topic drill is live in chat: one question, your answer, then a professional version.
+
 ---
 
 ## Day 1 — Project foundation
@@ -986,3 +994,17 @@ Everyone hits `/` first. Details is a separate chunk so the first paint does not
 ### 14. What does `loading="lazy"` on a vehicle image actually do?
 
 The browser fetches the photo when it nears the viewport. Page 1 of inventory should not download page 4’s trucks. It does not shrink the file.
+
+## Day 15 — Final integration
+
+### 1. Why can't Admin Pinia see a test drive the client just POSTed?
+
+Different apps, different ports, different in-memory mocks. Pinia never crosses an origin. Day 15 writes `client-desk.json` so Admin can merge on boot. A real .NET API would be the shared store.
+
+### 2. Walk FLOW 1 from Admin create to the client card.
+
+Admin form → `vehicleService.createVehicle` → mock POST (draft) → Publish → `admin-published.json` → client `applyPublishedInventory` → `listVehicles` → inventory card. The client view never imports Admin’s store.
+
+### 3. What did Day 15 change, and what did it refuse to rewrite?
+
+Changed: the Client → Admin hole, titles, `requested`, board Retry. Left: copied `FormField`/`http.js`, large views that already compose children, query-string sync, ESLint, real auth.

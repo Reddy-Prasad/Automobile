@@ -25,6 +25,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 12 | Admin application | ✅ Done | — |
 | 13 | Real backend knowledge (UI) | ✅ Done | — |
 | 14 | Professional frontend engineering | ✅ Done | — |
+| 15 | Final integration and review | ✅ Done | — |
 
 ---
 
@@ -280,6 +281,21 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 15 — Final integration and real-world review
+
+**Goal:** prove the four platform flows, fix only the holes that break them, and start a live interview drill. No random features.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Review Client / CMS / Admin / mock layers | ✅ | [platform-review.md](platform-review.md) |
+| 2 | FLOW 1 Admin create → publish → client lot | ✅ | `e2e/platform-flows.spec.js` |
+| 3 | FLOW 2 CMS homepage → client offers heading | ✅ | same |
+| 4 | FLOW 3–4 client bookings → Admin boards (desk snapshot) | ✅ | `client-desk.json` + `applyClientDesk()` |
+| 5 | Fix only meaningful issues | ✅ | desk bridge, titles, Retry, `requested` |
+| 6 | Live interview drill (one question at a time in chat) | 🔄 | This conversation |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -314,6 +330,7 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 26 | Answer the Day 13 questions in [interview-qa.md](interview-qa.md#day-13--real-backend-integration-knowledge) out loud | Day 13 | ⬜ |
 | 27 | Break the inventory search on purpose, then walk the 12 debug steps out loud before you fix it | Day 14 | ⬜ |
 | 28 | Answer the Day 14 questions in [interview-qa.md](interview-qa.md#day-14--professional-frontend-engineering) out loud | Day 14 | ⬜ |
+| 29 | Walk FLOW 1–4 yourself with the three apps running, then answer in chat | Day 15 | ⬜ |
 
 ---
 
@@ -356,7 +373,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | 12 | ~~Admin app~~ | ✅ Done: `admin/` on 5182, inventory CRUD → client lot |
 | 13 | ~~.NET-for-UI knowledge~~ | ✅ Done: HTTP, REST, status codes, Network, DB words |
 | 14 | ~~Professional frontend engineering~~ | ✅ Done: debug process, Vitest, Playwright, a11y pass |
-| 15 | Performance and production | Lazy loading review, image optimisation, build and deploy |
+| 15 | ~~Final integration and review~~ | ✅ Done: four flows, desk bridge, live interview drill |
 
 ---
 
