@@ -91,6 +91,13 @@ export const useAuthStore = defineStore('auth', {
       this.clear()
     },
 
+    async refreshUser() {
+      this.user = await getCurrentUser()
+      writeSession({ token: this.token, user: this.user })
+      this.status = 'success'
+      return this.user
+    },
+
     async restoreSession() {
       if (this.ready) return
       if (!this.token) {

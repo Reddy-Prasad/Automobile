@@ -33,7 +33,7 @@ onMounted(() => {
       <SectionHeading
         eyebrow="Your requests"
         title="Your bookings and applications"
-        subtitle="Test drives, service, trade-ins and finance — all from the mock API. Refresh keeps them until you restart the dev server."
+        subtitle="Same accountStore as /account. This page shows every mock record so you can practice PATCH / PUT / DELETE."
       />
 
       <ResourceState
