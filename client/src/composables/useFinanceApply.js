@@ -66,6 +66,7 @@ export function useFinanceApply() {
         monthlyIncome: Number(form.monthlyIncome),
         loanAmount: Number(form.loanAmount),
         termMonths: Number(form.termMonths),
+        vehicleTitle: extra.vehicleTitle || 'Shopper quote',
         source: 'finance-page',
         ...extra,
       })

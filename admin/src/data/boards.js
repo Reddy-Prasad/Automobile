@@ -29,9 +29,10 @@ export const BOARDS = {
     label: 'Test Drives',
     titleField: 'customerName',
     writePermission: 'inventory.write',
-    statusOptions: ['scheduled', 'confirmed', 'completed', 'cancelled'],
+    statusOptions: ['requested', 'scheduled', 'confirmed', 'completed', 'cancelled'],
     columns: [
       { key: 'customerName', label: 'Customer' },
+      { key: 'vehicleTitle', label: 'Vehicle' },
       { key: 'day', label: 'Day' },
       { key: 'time', label: 'Time' },
       { key: 'locationName', label: 'Store' },

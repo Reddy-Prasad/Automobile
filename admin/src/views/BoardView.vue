@@ -39,7 +39,10 @@ async function onStatus(row, event) {
     <h1 class="h3 fw-bold mb-4">{{ spec.label }}</h1>
 
     <div v-if="status === 'loading'" class="alert alert-secondary">Loading…</div>
-    <div v-else-if="status === 'error'" class="alert alert-danger">{{ error?.message }}</div>
+    <div v-else-if="status === 'error'" class="alert alert-danger">
+      {{ error?.message }}
+      <button type="button" class="btn btn-sm btn-outline-danger ms-2" @click="load">Retry</button>
+    </div>
     <EmptyState v-else-if="status === 'empty'" title="No records" />
     <div v-else class="card border-0 shadow-sm">
       <DataTable :columns="spec.columns" :rows="items">

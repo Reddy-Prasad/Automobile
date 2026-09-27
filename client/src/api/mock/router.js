@@ -1,6 +1,7 @@
 import { ROLES, permissionsFor } from '@/data/roles'
 import { filterInventory } from '@/utils/vehicles'
 import { db, nextId } from './db'
+import { writeClientDesk } from './desk'
 
 function json(status, data) {
   return new Response(data == null ? null : JSON.stringify(data), {
@@ -122,6 +123,7 @@ export function handleMockRequest(path, init = {}) {
       ...body,
     }
     db.testDrives.push(record)
+    writeClientDesk()
     return json(201, record)
   }
 
@@ -130,12 +132,14 @@ export function handleMockRequest(path, init = {}) {
     const record = findById(db.testDrives, driveMatch.id)
     if (!record) return json(404, { message: 'Test drive not found.' })
     Object.assign(record, body)
+    writeClientDesk()
     return json(200, record)
   }
   if (driveMatch && method === 'DELETE') {
     const index = db.testDrives.findIndex((item) => String(item.id) === String(driveMatch.id))
     if (index === -1) return json(404, { message: 'Test drive not found.' })
     db.testDrives.splice(index, 1)
+    writeClientDesk()
     return new Response(null, { status: 204 })
   }
 
@@ -159,6 +163,7 @@ export function handleMockRequest(path, init = {}) {
       ...body,
     }
     db.financeApplications.push(record)
+    writeClientDesk()
     return json(201, record)
   }
 
@@ -167,6 +172,7 @@ export function handleMockRequest(path, init = {}) {
     const record = findById(db.financeApplications, financeMatch.id)
     if (!record) return json(404, { message: 'Finance application not found.' })
     Object.assign(record, { id: record.id, createdAt: record.createdAt, ...body })
+    writeClientDesk()
     return json(200, record)
   }
   if (financeMatch && method === 'DELETE') {
@@ -175,6 +181,7 @@ export function handleMockRequest(path, init = {}) {
     )
     if (index === -1) return json(404, { message: 'Finance application not found.' })
     db.financeApplications.splice(index, 1)
+    writeClientDesk()
     return new Response(null, { status: 204 })
   }
 
@@ -192,6 +199,7 @@ export function handleMockRequest(path, init = {}) {
       ...body,
     }
     db.serviceBookings.push(record)
+    writeClientDesk()
     return json(201, record)
   }
   const serviceMatch = match(pathname, '/service-bookings/:id')
@@ -199,6 +207,7 @@ export function handleMockRequest(path, init = {}) {
     const index = db.serviceBookings.findIndex((item) => String(item.id) === String(serviceMatch.id))
     if (index === -1) return json(404, { message: 'Service booking not found.' })
     db.serviceBookings.splice(index, 1)
+    writeClientDesk()
     return new Response(null, { status: 204 })
   }
 
@@ -216,6 +225,7 @@ export function handleMockRequest(path, init = {}) {
       ...body,
     }
     db.tradeIns.push(record)
+    writeClientDesk()
     return json(201, record)
   }
   const tradeMatch = match(pathname, '/trade-ins/:id')
@@ -223,6 +233,7 @@ export function handleMockRequest(path, init = {}) {
     const index = db.tradeIns.findIndex((item) => String(item.id) === String(tradeMatch.id))
     if (index === -1) return json(404, { message: 'Trade-in not found.' })
     db.tradeIns.splice(index, 1)
+    writeClientDesk()
     return new Response(null, { status: 204 })
   }
 

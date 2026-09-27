@@ -224,6 +224,12 @@ admin/
 - A11y pass: skip link, labelled controls, modal focus / Escape, alt text, `aria-live` on EMI
 - See [docs/debugging.md](docs/debugging.md) and [docs/testing.md](docs/testing.md)
 
+### Day 15 — Final integration and real-world review
+
+- Four platform flows verified. Client → Admin now uses `admin/public/client-desk.json` (same idea as CMS/Admin publish files)
+- Review only: no random features. Meaningful fixes only. See [docs/platform-review.md](docs/platform-review.md)
+- Live interview drill is in chat — one question at a time
+
 ## Learning notes
 
 - [Task tracker](docs/tasks.md): what's done, your practice exercises, known limitations and the roadmap. Updated every day.
@@ -234,6 +240,7 @@ admin/
 - [Testing](docs/testing.md): Vitest, Vue Test Utils, Playwright, a11y and viewports.
 - [Authentication and authorization](docs/auth.md): who you are vs what you may do, tokens vs session, what .NET would change.
 - [Client architecture](docs/client-architecture.md): Component → Composable → Store → Service → Mock API.
+- [Platform review](docs/platform-review.md): four business flows, what we fixed, what we left.
 
 ## Daily Git workflow
 

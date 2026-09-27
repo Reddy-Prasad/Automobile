@@ -9,6 +9,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { installGuards } from './router/guards'
+import { applyClientDesk } from './api/mock/desk'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -17,4 +18,6 @@ app.use(pinia)
 installGuards(router)
 app.use(router)
 
-app.mount('#app')
+applyClientDesk().finally(() => {
+  app.mount('#app')
+})
