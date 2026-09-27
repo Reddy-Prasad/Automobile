@@ -6,7 +6,7 @@ The platform is planned as three separate Vue applications that share the same s
 
 | App | Purpose | Status | Dev URL |
 |---|---|---|---|
-| `client/` | Public dealership website for shoppers | In progress | http://localhost:5180 |
+| `client/` | Public dealership website for shoppers | In progress | http://localhost:5173 |
 | `cms/` | Content management (offers, banners, pages) | Planned | http://localhost:5181 |
 | `admin/` | Dealer/admin dashboard (inventory, leads) | Planned | http://localhost:5182 |
 
@@ -27,7 +27,7 @@ Requires Node.js `^20.19.0 || >=22.12.0`.
 ```bash
 cd client
 npm install
-npm run dev       # start dev server at http://localhost:5180
+npm run dev       # start dev server at http://localhost:5173
 npm run build     # production build into client/dist
 npm run preview   # serve the production build locally
 ```
@@ -37,24 +37,25 @@ npm run preview   # serve the production build locally
 ```
 client/
 ├── index.html                 Single HTML page; Vue mounts into #app
-├── vite.config.js             Vue plugin, "@" → src alias, fixed port 5180
+├── vite.config.js             Vue plugin, "@" → src alias, port 5173
 └── src/
     ├── main.js                Entry: loads Bootstrap, creates app, installs Pinia + Router
     ├── App.vue                Root component → MainLayout
     ├── router/index.js        Routes, 404 catch-all, smooth scroll to #hash links
     ├── layouts/MainLayout.vue Header + <RouterView /> + footer
     ├── api/                   HTTP client, request log, in-memory mock REST router
-    ├── services/              vehicle, customer, testDrive, finance
-    ├── composables/           useVehicles, useVehicle, request helpers
+    ├── services/              vehicle, customer, testDrive, finance, service, trade-in
+    ├── composables/           request helpers + useFormSubmit / flow forms
     ├── stores/                Pinia: vehicles, auth, favorites, compare
     ├── data/                  Seed data for the mock DB and UI copy
-    ├── utils/                 Formatters (currency, mileage, date) and vehicle helpers
+    ├── utils/                 Formatters, validators, finance and trade-in helpers
     ├── components/
-    │   ├── common/            SectionHeading
+    │   ├── common/            SectionHeading, ResourceState
+    │   ├── forms/             Shared field, appointment, contact, actions, result
     │   ├── vehicles/          VehicleCard, VehicleGallery, VehicleActions
     │   ├── layout/            AppHeader, AppFooter
     │   └── home/              Homepage sections (hero, search, showcase, finance, …)
-    └── views/                 Home, inventory, details, finance, saved, compare, requests, credits, 404
+    └── views/                 Home, inventory, details, finance, test-drive, service, trade-in, saved, compare, requests, credits, 404
 ```
 
 Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehicles/<name>.jpg`).
@@ -120,6 +121,13 @@ Vehicle photos live in `client/public/images/vehicles/` (served as `/images/vehi
 - Loading, success, API error, Retry, Simulate API error
 - Form state stays local. Header **Finance** goes to the page, not `#finance`
 - Exercise: debt-to-income % (EMI ÷ income) with a warning over 40%
+
+### Day 8 — Customer business flows
+
+- `/test-drive`, `/service`, `/trade-in` with shared form pieces and unique fields
+- Mock POST (+ GET/DELETE) for service bookings and trade-ins; My requests lists all four
+- Submit stays disabled until the form is complete; Reset and Simulate API error on each page
+- Exercise: add a Notes field to the service booking POST
 
 ## Learning notes
 

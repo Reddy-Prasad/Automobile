@@ -108,6 +108,17 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 7. How do you show field errors vs an API error?
 8. What is the EMI formula AutoDrive uses?
 
+**[Day 8 — Customer business flows](#day-8--customer-business-flows)**
+
+1. What should be reusable across test drive, service and trade-in?
+2. What should NOT be reusable?
+3. Why is `useFormSubmit` a factory instead of one giant store?
+4. When is the Submit button disabled?
+5. How do date/time/location stay DRY without copying a form?
+6. Field errors vs API errors vs Reset — who owns each?
+7. Why does trade-in skip AppointmentFields?
+8. Walk Submit on `/service` from the button to the mock API.
+
 ---
 
 ## Day 1 — Project foundation
@@ -640,3 +651,52 @@ If `r === 0`: EMI = `P / n`.
 Else: EMI = `P * r / (1 - (1 + r) ** -n)`.
 
 Total payment = EMI × n. Total interest = total payment − P.
+
+## Day 8 — Customer business flows
+
+### 1. What should be reusable across test drive, service and trade-in?
+
+The **form machine** and the **shared widgets**:
+
+- `useFormSubmit({ emptyForm, validate, send })` — loading, success, API error, reset, retry, disabled submit
+- `FormField`, `ContactFields`, `FormActions`, `FormResult`, `FlowSteps`
+- `AppointmentFields` for the two booking flows
+- Shared validators (`required`, `validEmail`, `validPhone`, `validDate`)
+
+Copying those three times would mean three bugs when loading or reset changes.
+
+### 2. What should NOT be reusable?
+
+The **business fields and the POST body**. Test drive picks a stock vehicle. Service asks year / make / model plus a service type. Trade-in asks mileage, condition and expected value — it is not an appointment. Each page also has its own `emptyForm`, `validate*` and `send()` that calls the right service.
+
+A generic "CustomerForm" with 20 optional props is harder than three thin pages that share pieces.
+
+### 3. Why is `useFormSubmit` a factory instead of one giant store?
+
+Each visit owns one draft. The header does not need the service date. Day 6 rule: if one screen owns it, keep it local. The factory takes `emptyForm`, `validate` and `send` so the three flows share behaviour without sharing state.
+
+### 4. When is the Submit button disabled?
+
+When `isLoading` **or** the live `validate(form)` still has errors (`!isComplete`). The user cannot POST an incomplete body. Simulate API error uses the same rule so `failNextRequest()` is not armed on a half-filled form.
+
+### 5. How do date/time/location stay DRY without copying a form?
+
+`AppointmentFields` is a presentational chunk. It receives `form`, `errors` and `fieldClass`. Test drive and service both drop it in. Trade-in does not import it. Shared layout, unique pages.
+
+### 6. Field errors vs API errors vs Reset — who owns each?
+
+| Concern | Owner |
+|---|---|
+| Field errors | `validate(form)` → `errors.date` under the input |
+| API error | `status === 'error'` after `send()` throws — `FormResult` + Retry |
+| Reset | `reset()` copies `emptyForm()` back and clears status |
+
+Validation failure never hits the mock. A 500 never becomes `errors.date`.
+
+### 7. Why does trade-in skip AppointmentFields?
+
+A trade-in is an **estimate request**, not a store visit. Date, time and location would be fake requirements. Reuse the contact row and the submit machine; skip appointment fields.
+
+### 8. Walk Submit on `/service` from the button to the mock API.
+
+`ServiceView` `@submit` → `useServiceForm.submit()` (from `useFormSubmit`) → `validateServiceBooking` → `createServiceBooking()` → `request('POST', /service-bookings)` → mock delay + 201 (or 400/500) → composable sets `success` or `error` → `FormResult`. The `.vue` file never imports `handleMockRequest`.

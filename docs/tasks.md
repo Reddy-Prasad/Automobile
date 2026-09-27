@@ -18,6 +18,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 5 | Mock API and service layer | ✅ Done | — |
 | 6 | Pinia and state management | ✅ Done | — |
 | 7 | Finance calculator and application | ✅ Done | — |
+| 8 | Customer business flows | ✅ Done | — |
 
 ---
 
@@ -54,7 +55,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 6 | Offers | ✅ | `home/OffersSection.vue` |
 | 7 | Finance section with payment calculator | ✅ | `home/FinanceSection.vue` |
 | 8 | Service section | ✅ | `home/ServiceSection.vue` |
-| 9 | Trade-in form with thank-you message | ✅ | `home/TradeInSection.vue` |
+| 9 | Trade-in teaser (full form is `/trade-in`) | ✅ | `home/TradeInSection.vue` |
 | 10 | Locations (3 Texas stores) | ✅ | `home/LocationsSection.vue` |
 | 11 | Call to action | ✅ | `home/CtaSection.vue` |
 | 12 | Footer with shop, locations and contact columns | ✅ | `layout/AppFooter.vue` |
@@ -163,6 +164,22 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 8 — Customer business flows
+
+**Goal:** test drive, service and trade-in share form pieces, not one giant form.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Shared form engine: validate, loading, success, error, reset, disabled submit | ✅ | `useFormSubmit.js` |
+| 2 | Reusable UI: FormField, AppointmentFields, ContactFields, FormActions, FormResult | ✅ | `components/forms/` |
+| 3 | `/test-drive` — vehicle, date, time, location, POST | ✅ | `TestDriveView.vue` |
+| 4 | `/service` — vehicle, type, date, time, location, POST | ✅ | `ServiceView.vue` |
+| 5 | `/trade-in` — vehicle, year, mileage, condition, expected value, POST | ✅ | `TradeInView.vue` |
+| 6 | Mock GET/POST/DELETE for service and trade-in; My requests lists them | ✅ | `api/mock/`, `RequestsView` |
+| 7 | Learn: what to reuse vs what stays unique | ✅ | [Q&A Day 8](interview-qa.md#day-8--customer-business-flows) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -183,6 +200,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 12 | Answer the Day 6 questions in [interview-qa.md](interview-qa.md#day-6--pinia-and-state-management) out loud | Day 6 | ⬜ |
 | 13 | Show a debt-to-income % (EMI ÷ monthly income) and warn if it is over 40% | Day 7 | ⬜ |
 | 14 | Answer the Day 7 questions in [interview-qa.md](interview-qa.md#day-7--finance-calculator-and-application) out loud | Day 7 | ⬜ |
+| 15 | Add a Notes textarea to the service form and send it in the POST body | Day 8 | ⬜ |
+| 16 | Answer the Day 8 questions in [interview-qa.md](interview-qa.md#day-8--customer-business-flows) out loud | Day 8 | ⬜ |
 
 ---
 
@@ -193,7 +212,7 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | # | Limitation | Why | Planned fix |
 |---|---|---|---|
 | 1 | ~~"View details" buttons do nothing~~ | ✅ Fixed: cards go to `/vehicles/:id` | Done (Day 4) |
-| 2 | "Claim offer" and "Book service" still scroll to contact | Finance now has `/finance`; those two still have no form | Later forms |
+| 2 | "Claim offer" still scrolls to contact | Service and trade-in now have real pages | Offers / later |
 | 3 | ~~Vehicle images are coloured placeholders~~ | ✅ Fixed: real photos added. The coloured placeholder is still the fallback for vehicles without an `image` | Done (Day 2) |
 | 4 | ~~Favourite hearts reset on page reload and aren't shared across cards and the details page~~ | ✅ Fixed: `favoriteStore` + `localStorage`; `/saved` | Done (Day 6) |
 | 5 | Search state lives inside `VehicleSearch`, and the parent reaches in with `defineExpose` | Left local on purpose — not every form belongs in Pinia | Optional later |
@@ -202,7 +221,7 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 8 | Filter choices in the URL are read once, not kept in sync as you type | Enough to deep-link from the homepage; a full query-string sync is later work | Pinia / inventory polish |
 | 9 | No tests, no linting | Not covered yet | Testing day |
 | 10 | Mock data lives in memory; refresh of the tab keeps it, restarting Vite resets POST/PATCH/DELETE | There is no real database | .NET API day |
-| 11 | Homepage offers, locations and trade-in still read local modules | Only vehicle/request screens were moved to the service layer | Offers exercise / later days |
+| 11 | Homepage offers and locations still read local modules | Service and trade-in POSTs live on their own pages | Offers exercise / later days |
 
 ---
 
@@ -214,7 +233,7 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 |---|---|---|
 | 6 | ~~Pinia~~ | ✅ Done: vehicle / auth / favorite / compare stores |
 | 7 | ~~Finance / forms~~ | ✅ Done: `/finance` calculator + validated POST application |
-| 8 | Compare and favourites polish | Richer compare (highlight diffs); optional account-backed favourites |
+| 8 | ~~Customer flows~~ | ✅ Done: test drive, service, trade-in |
 | 9 | CMS app | Create `cms/` (port 5181): manage offers and hero banners |
 | 10 | Admin app | Create `admin/` (port 5182): inventory table and leads |
 | 11 | Auth | Login, route guards, role-based access |
