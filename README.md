@@ -204,11 +204,20 @@ admin/
 - Demo staff: Jordan admin, Morgan inventory, Sam service. Password `Password1!`
 - Exercise: change a published price in Admin and confirm the client details page updates after refresh
 
+### Day 13 — Real backend integration knowledge
+
+- UI-only: HTTP → .NET → database → JSON → Vue. No C# project, no SQL database
+- REST verbs, URL / headers / query / path / body, status codes 200–500
+- Chrome Network (Fetch/XHR) for real APIs; mock still uses the console + footer log
+- Database words with dealership examples: table, row, keys, one-to-many, JOIN concept
+- Flip `VITE_USE_MOCK=false` in `.env` — views and services stay. See [docs/dotnet-for-ui.md](docs/dotnet-for-ui.md)
+
 ## Learning notes
 
 - [Task tracker](docs/tasks.md): what's done, your practice exercises, known limitations and the roadmap. Updated every day.
 - [Interview questions & answers](docs/interview-qa.md): question index for self-testing plus full answers, grouped by day. Updated every day.
 - [API handling and request state](docs/api-handling.md): one page for `http.js` (mock vs real API) and INITIAL / LOADING / SUCCESS / EMPTY / ERROR / Retry.
+- [.NET for UI developers](docs/dotnet-for-ui.md): REST, status codes, Network tab, database words, mock → `fetch`.
 - [Authentication and authorization](docs/auth.md): who you are vs what you may do, tokens vs session, what .NET would change.
 - [Client architecture](docs/client-architecture.md): Component → Composable → Store → Service → Mock API.
 

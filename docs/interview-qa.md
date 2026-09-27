@@ -155,6 +155,19 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 4. Draft vs published on a vehicle — who sees what?
 5. Inventory manager vs service manager — what is a permission check for?
 
+**[Day 13 — Real backend integration knowledge](#day-13--real-backend-integration-knowledge)**
+
+1. Walk a vehicle from Vue to the database and back. What is your job on that path?
+2. GET vs POST vs PUT vs PATCH vs DELETE — give one AutoDrive example each.
+3. Path parameter vs query parameter?
+4. What goes in headers vs the request body?
+5. 401 vs 403?
+6. 404 vs 409 vs 422?
+7. Why does `fetch` not throw on 404, and what does `http.js` do about it?
+8. What do you look at first in Chrome Network when a form “does nothing”?
+9. Primary key vs foreign key — use test drives.
+10. What do you change — and what do you not change — when the mock becomes a .NET API?
+
 ---
 
 ## Day 1 — Project foundation
@@ -848,3 +861,45 @@ Two apps, two origins. The client must keep its own path: view → store → ser
 ### 5. Inventory manager vs service manager — what is a permission check for?
 
 Morgan has `inventory.write` so she can create and publish. Sam has `service.write` so he can move a service job. Neither switch is the other. Admin has `*`. The sidebar hides what you cannot open; the mock still returns 403 if you guess the URL.
+
+## Day 13 — Real backend integration knowledge
+
+### 1. Walk a vehicle from Vue to the database and back. What is your job on that path?
+
+Vue → service → `request()` → HTTP → .NET → database → .NET → JSON → Vue. I own the service call, the JSON on the screen, and the status UI. I do not write SQL or C#.
+
+### 2. GET vs POST vs PUT vs PATCH vs DELETE — give one AutoDrive example each.
+
+GET `/vehicles` reads the lot. POST `/test-drives` creates a booking. PUT replaces a whole finance application. PATCH `{ saved: true }` on a vehicle is the heart. DELETE `/test-drives/4` cancels that row.
+
+### 3. Path parameter vs query parameter?
+
+Path is **which resource**: `/vehicles/1`. Query is **filters**: `/vehicles?make=Honda`. The id is not optional; the filter is.
+
+### 4. What goes in headers vs the request body?
+
+Headers are metadata (`Authorization`, `Content-Type`). The body is the record (`name`, `vehicleId`, `day`). You do not put the APR in a header.
+
+### 5. 401 vs 403?
+
+401: we do not know you (no token or dead token) — send them to login. 403: we know you and you may not do this (customer on Admin).
+
+### 6. 404 vs 409 vs 422?
+
+404: that id is not there. 409: the state clashes (delete a published car; email already registered). 422: the fields failed validation — show the field errors.
+
+### 7. Why does `fetch` not throw on 404, and what does `http.js` do about it?
+
+`fetch` only fails on network errors. 404 is still a Response. `http.js` checks `response.ok` and throws `ApiError` so the composable can set `error` and show Retry.
+
+### 8. What do you look at first in Chrome Network when a form “does nothing”?
+
+Fetch/XHR → that POST: status, request URL, payload, response JSON. If there is no row, the click never called `request()`. If the row is 422, the API rejected the body.
+
+### 9. Primary key vs foreign key — use test drives.
+
+Primary key: `TestDrives.Id` uniquely names that booking. Foreign key: `VehicleId` points at `Vehicles.Id` so we know which RAV4. Vue receives both as numbers on the JSON.
+
+### 10. What do you change — and what do you not change — when the mock becomes a .NET API?
+
+Change `.env` (`VITE_USE_MOCK=false`, `VITE_API_BASE_URL`) and restart Vite. Change a service path only if .NET used different names. Do **not** rewrite views, stores, or put `fetch` in a `.vue` file.

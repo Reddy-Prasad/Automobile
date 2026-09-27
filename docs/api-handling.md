@@ -138,9 +138,17 @@ If `await request()` throws (`ApiError`), catch it and set `status = 'error'`. W
 | Status | Meaning in AutoDrive |
 |---|---|
 | 200 | Success, body is JSON |
+| 201 | Created (POST test drive) |
 | 204 | DELETE succeeded, no body |
+| 400 | Bad payload |
+| 401 | Not signed in |
+| 403 | Signed in, not allowed |
 | 404 | `/vehicles/101` — id does not exist |
+| 409 | Conflict (duplicate email, delete a published car) |
+| 422 | Validation errors on fields |
 | 500 | **Simulate API error**, or `X-Mock-Fail: 1` |
+
+Full UI-developer map (Network tab, database words, mock → .NET): [dotnet-for-ui.md](dotnet-for-ui.md).
 
 ---
 
@@ -205,12 +213,12 @@ If .NET uses different names (`/api/cars` instead of `/vehicles`), you change **
 
 ## How to inspect a request
 
-1. Run the client: `cd client` then `npm run dev` → http://localhost:5180
+1. Run the client: `cd client` then `npm run dev` → http://localhost:5173
 2. **Console:** `[API] GET /vehicles → 200 (612ms)`
 3. **Footer bar:** last four calls (method, path, status, time)
 4. Inventory → **Simulate API error** → 500 → Retry
 5. `/vehicles/101` → 404
-6. Mock does **not** appear in the Network tab (no real HTTP). After `VITE_USE_MOCK=false`, the same `request()` shows in **Network**.
+6. Mock does **not** appear in the Network tab (no real HTTP). After `VITE_USE_MOCK=false`, the same `request()` shows in Chrome **Network** (Fetch/XHR → Headers, Payload, Response, Status).
 
 ---
 

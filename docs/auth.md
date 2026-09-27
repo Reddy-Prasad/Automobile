@@ -19,7 +19,7 @@ You can be authenticated and still get **403 Forbidden**. That is not a failed l
 | CMS | `/cms` | `CMS_EDITOR`, `CMS_REVIEWER`, `ADMIN` |
 | Admin | `/admin` | `ADMIN`, `INVENTORY_MANAGER`, `SERVICE_MANAGER` |
 
-These are **areas inside the client app** so Day 9 stays on auth. Later days can split them into `cms/` and `admin/` Vite apps that call the same `/auth/*` contract.
+Day 9 taught this as areas inside the client. Days 11–12 split CMS and Admin into their own Vite apps. They still share the same `/auth/*` idea: login returns a token, `http.js` sends `Authorization: Bearer`.
 
 ## Token vs session
 

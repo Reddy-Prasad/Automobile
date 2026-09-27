@@ -23,6 +23,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 10 | Customer account | ✅ Done | — |
 | 11 | CMS application | ✅ Done | — |
 | 12 | Admin application | ✅ Done | — |
+| 13 | Real backend knowledge (UI) | ✅ Done | — |
 
 ---
 
@@ -247,6 +248,21 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 13 — Real backend integration knowledge
+
+**Goal:** a UI developer can talk to a .NET API team, read the Network tab, and keep Vue layers so the mock flips to `fetch` without rewriting screens. No database and no C# project.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | Document HTTP → .NET → JSON → Vue for UI developers | ✅ | [dotnet-for-ui.md](dotnet-for-ui.md) |
+| 2 | REST verbs, URL / headers / query / path / body, status codes | ✅ | same |
+| 3 | Chrome Network inspection notes | ✅ | same + [api-handling.md](api-handling.md) |
+| 4 | Database words only (table, key, JOIN concept) with dealership examples | ✅ | same |
+| 5 | `.env.example` — `VITE_USE_MOCK` / `VITE_API_BASE_URL` | ✅ | `client/`, `cms/`, `admin/` |
+| 6 | Learn: mock → .NET without changing views | ✅ | [Q&A Day 13](interview-qa.md#day-13--real-backend-integration-knowledge) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -277,6 +293,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 22 | Answer the Day 11 questions in [interview-qa.md](interview-qa.md#day-11--cms-application) out loud | Day 11 | ⬜ |
 | 23 | On a published vehicle, change price in Admin and confirm the client details page updates after refresh | Day 12 | ⬜ |
 | 24 | Answer the Day 12 questions in [interview-qa.md](interview-qa.md#day-12--admin-application) out loud | Day 12 | ⬜ |
+| 25 | Open Network on a real site you use, find one XHR, and name method, status, and whether the id is a path or query param | Day 13 | ⬜ |
+| 26 | Answer the Day 13 questions in [interview-qa.md](interview-qa.md#day-13--real-backend-integration-knowledge) out loud | Day 13 | ⬜ |
 
 ---
 
@@ -317,8 +335,9 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | 10 | ~~Customer account~~ | ✅ Done: /account hub with shared table/state widgets |
 | 11 | ~~CMS app~~ | ✅ Done: `cms/` on 5181, draft → publish → client |
 | 12 | ~~Admin app~~ | ✅ Done: `admin/` on 5182, inventory CRUD → client lot |
-| 13 | Testing | Vitest unit tests and Playwright end-to-end tests |
+| 13 | ~~.NET-for-UI knowledge~~ | ✅ Done: HTTP, REST, status codes, Network, DB words |
 | 14 | Performance and production | Lazy loading, image optimisation, build and deploy |
+| 15 | Testing | Vitest unit tests and Playwright end-to-end tests |
 
 ---
 
