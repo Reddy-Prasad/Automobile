@@ -9,8 +9,6 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { installGuards } from './router/guards'
-import { applyPublishedInventory } from './api/mock/db'
-import { usePublishedStore } from './stores/publishedStore'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -19,7 +17,4 @@ app.use(pinia)
 installGuards(router)
 app.use(router)
 
-const published = usePublishedStore(pinia)
-Promise.all([published.load(), applyPublishedInventory()]).finally(() => {
-  app.mount('#app')
-})
+app.mount('#app')

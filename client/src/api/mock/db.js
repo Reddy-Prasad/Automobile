@@ -36,3 +36,22 @@ export function nextId(collection) {
   counters[collection] += 1
   return id
 }
+
+export async function applyPublishedInventory() {
+  try {
+    const response = await fetch('/admin-published.json', { cache: 'no-store' })
+    if (!response.ok) return
+    const snapshot = await response.json()
+    for (const vehicle of snapshot.vehicles ?? []) {
+      const index = db.vehicles.findIndex((item) => Number(item.id) === Number(vehicle.id))
+      if (index >= 0) Object.assign(db.vehicles[index], vehicle)
+      else db.vehicles.push(vehicle)
+    }
+    const unpublished = snapshot.unpublishedIds ?? []
+    if (unpublished.length) {
+      db.vehicles = db.vehicles.filter((item) => !unpublished.includes(item.id))
+    }
+  } catch {
+    // Seed inventory stays if the snapshot is missing.
+  }
+}
