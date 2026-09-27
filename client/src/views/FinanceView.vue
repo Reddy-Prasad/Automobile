@@ -166,7 +166,7 @@ watch(
                 <dt class="col-6">Loan amount</dt>
                 <dd class="col-6 text-end">{{ formatCurrencyPrecise(loanAmount) }}</dd>
                 <dt class="col-6">Monthly EMI</dt>
-                <dd class="col-6 text-end fw-bold text-primary fs-4">
+                <dd id="calc-emi" class="col-6 text-end fw-bold text-primary fs-4" aria-live="polite">
                   {{ formatCurrencyPrecise(monthlyEmi) }}
                 </dd>
                 <dt class="col-6">Total interest</dt>

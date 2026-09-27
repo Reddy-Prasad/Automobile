@@ -7,3 +7,14 @@ body,
 .admin-sidebar {
   width: 260px;
 }
+
+.skip-link:focus {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 1080;
+}
+
+#main-content:focus {
+  outline: none;
+}

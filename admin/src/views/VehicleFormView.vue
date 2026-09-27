@@ -124,16 +124,16 @@ async function onSubmit() {
           </FormField>
         </div>
         <div class="col-md-3">
-          <label class="form-label small fw-semibold">Condition</label>
-          <select v-model="form.condition" class="form-select">
+          <label for="vehicle-condition" class="form-label small fw-semibold">Condition</label>
+          <select id="vehicle-condition" v-model="form.condition" class="form-select">
             <option value="new">New</option>
             <option value="used">Used</option>
             <option value="cpo">CPO</option>
           </select>
         </div>
         <div class="col-md-3">
-          <label class="form-label small fw-semibold">Body</label>
-          <select v-model="form.bodyType" class="form-select">
+          <label for="vehicle-body" class="form-label small fw-semibold">Body</label>
+          <select id="vehicle-body" v-model="form.bodyType" class="form-select">
             <option>SUV</option>
             <option>Sedan</option>
             <option>Truck</option>
@@ -141,16 +141,16 @@ async function onSubmit() {
           </select>
         </div>
         <div class="col-md-3">
-          <label class="form-label small fw-semibold">Fuel</label>
-          <select v-model="form.fuelType" class="form-select">
+          <label for="vehicle-fuel" class="form-label small fw-semibold">Fuel</label>
+          <select id="vehicle-fuel" v-model="form.fuelType" class="form-select">
             <option>Gas</option>
             <option>Hybrid</option>
             <option>Electric</option>
           </select>
         </div>
         <div class="col-md-3">
-          <label class="form-label small fw-semibold">Availability</label>
-          <select v-model="form.availability" class="form-select">
+          <label for="vehicle-availability" class="form-label small fw-semibold">Availability</label>
+          <select id="vehicle-availability" v-model="form.availability" class="form-select">
             <option value="AVAILABLE">Available</option>
             <option value="IN_TRANSIT">In transit</option>
             <option value="RESERVED">Reserved</option>

@@ -5,10 +5,8 @@ defineProps({
 </script>
 
 <template>
-  <div class="text-center py-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading</span>
-    </div>
+  <div class="text-center py-5" role="status" aria-live="polite" aria-busy="true">
+    <div class="spinner-border text-primary" aria-hidden="true"></div>
     <p class="mt-3 mb-0 text-body-secondary">{{ message }}</p>
   </div>
 </template>

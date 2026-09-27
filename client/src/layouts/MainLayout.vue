@@ -6,9 +6,12 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 
 <template>
   <div class="d-flex flex-column min-vh-100">
+    <a class="skip-link btn btn-primary visually-hidden-focusable" href="#main-content">
+      Skip to main content
+    </a>
     <AppHeader />
 
-    <main class="flex-grow-1">
+    <main id="main-content" class="flex-grow-1" tabindex="-1">
       <RouterView />
     </main>
 

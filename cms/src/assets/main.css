@@ -16,3 +16,14 @@ body,
   border: 1px dashed var(--bs-border-color);
   background: #f8f9fa;
 }
+
+.skip-link:focus {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  z-index: 1080;
+}
+
+#main-content:focus {
+  outline: none;
+}

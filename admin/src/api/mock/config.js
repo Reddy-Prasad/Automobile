@@ -15,6 +15,7 @@ export function wait(ms) {
 }
 
 export function randomDelay() {
+  if (import.meta.env.VITE_MOCK_INSTANT === 'true') return 0
   const { minDelayMs, maxDelayMs } = mockConfig
   return Math.round(minDelayMs + Math.random() * (maxDelayMs - minDelayMs))
 }
