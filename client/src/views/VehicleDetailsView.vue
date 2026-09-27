@@ -97,11 +97,7 @@ function onTestDrive() {
 }
 
 function onTradeIn() {
-  router.push({
-    name: 'home',
-    hash: '#trade-in',
-    query: { vehicle: String(props.id) },
-  })
+  router.push({ name: 'trade-in' })
 }
 
 async function submitDrive() {
@@ -272,10 +268,16 @@ function onGallerySelect(item) {
                   <label for="drive-day" class="form-label small">Preferred day</label>
                   <input id="drive-day" v-model="drive.form.day" type="date" class="form-control" required />
                 </div>
-                <div class="col-12">
+                <div class="col-12 d-flex flex-wrap gap-2">
                   <button type="submit" class="btn btn-primary" :disabled="drive.status === 'loading'">
                     {{ drive.status === 'loading' ? 'Sending…' : 'Send request (POST)' }}
                   </button>
+                  <RouterLink
+                    class="btn btn-outline-primary"
+                    :to="{ name: 'test-drive', query: { vehicle: String(vehicle.id) } }"
+                  >
+                    Full booking (time + location)
+                  </RouterLink>
                 </div>
               </form>
             </div>

@@ -41,6 +41,21 @@ const router = createRouter({
       component: () => import('@/views/FinanceView.vue'),
     },
     {
+      path: '/test-drive',
+      name: 'test-drive',
+      component: () => import('@/views/TestDriveView.vue'),
+    },
+    {
+      path: '/service',
+      name: 'service',
+      component: () => import('@/views/ServiceView.vue'),
+    },
+    {
+      path: '/trade-in',
+      name: 'trade-in',
+      component: () => import('@/views/TradeInView.vue'),
+    },
+    {
       path: '/credits',
       name: 'credits',
       component: () => import('@/views/CreditsView.vue'),

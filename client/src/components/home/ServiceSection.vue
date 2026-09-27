@@ -28,7 +28,7 @@ const perks = ['Complimentary Wi-Fi & coffee', 'Loaner vehicles available', 'Onl
             </li>
           </ul>
           <div class="d-flex flex-wrap gap-2">
-            <RouterLink class="btn btn-primary" :to="{ name: 'home', hash: '#contact' }">
+            <RouterLink class="btn btn-primary" :to="{ name: 'service' }">
               <i class="bi bi-calendar-check me-2"></i>Book service
             </RouterLink>
             <RouterLink class="btn btn-outline-secondary" :to="{ name: 'home', hash: '#locations' }">

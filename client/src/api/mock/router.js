@@ -174,5 +174,53 @@ export function handleMockRequest(path, init = {}) {
     return new Response(null, { status: 204 })
   }
 
+  if (method === 'GET' && match(pathname, '/service-bookings')) {
+    return json(200, db.serviceBookings)
+  }
+  if (method === 'POST' && match(pathname, '/service-bookings')) {
+    if (!body.serviceType || !body.date || !body.time || !body.locationId || !body.name) {
+      return json(400, { message: 'A service booking needs type, date, time, location and name.' })
+    }
+    const record = {
+      id: nextId('service'),
+      status: 'scheduled',
+      createdAt: new Date().toISOString(),
+      ...body,
+    }
+    db.serviceBookings.push(record)
+    return json(201, record)
+  }
+  const serviceMatch = match(pathname, '/service-bookings/:id')
+  if (serviceMatch && method === 'DELETE') {
+    const index = db.serviceBookings.findIndex((item) => String(item.id) === String(serviceMatch.id))
+    if (index === -1) return json(404, { message: 'Service booking not found.' })
+    db.serviceBookings.splice(index, 1)
+    return new Response(null, { status: 204 })
+  }
+
+  if (method === 'GET' && match(pathname, '/trade-ins')) {
+    return json(200, db.tradeIns)
+  }
+  if (method === 'POST' && match(pathname, '/trade-ins')) {
+    if (!body.make || !body.model || !body.year || !body.name) {
+      return json(400, { message: 'A trade-in needs make, model, year and name.' })
+    }
+    const record = {
+      id: nextId('tradeIn'),
+      status: 'submitted',
+      createdAt: new Date().toISOString(),
+      ...body,
+    }
+    db.tradeIns.push(record)
+    return json(201, record)
+  }
+  const tradeMatch = match(pathname, '/trade-ins/:id')
+  if (tradeMatch && method === 'DELETE') {
+    const index = db.tradeIns.findIndex((item) => String(item.id) === String(tradeMatch.id))
+    if (index === -1) return json(404, { message: 'Trade-in not found.' })
+    db.tradeIns.splice(index, 1)
+    return new Response(null, { status: 204 })
+  }
+
   return json(404, { message: `No mock route for ${method} ${pathname}` })
 }

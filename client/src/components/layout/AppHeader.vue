@@ -126,7 +126,7 @@ watch(
             >
               {{ displayName }} · Sign out
             </button>
-            <RouterLink class="btn btn-warning fw-semibold" :to="{ name: 'home', hash: '#contact' }">
+            <RouterLink class="btn btn-warning fw-semibold" :to="{ name: 'test-drive' }">
               <i class="bi bi-calendar-check me-1"></i>Book a test drive
             </RouterLink>
           </div>

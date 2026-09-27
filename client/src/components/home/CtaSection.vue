@@ -15,11 +15,11 @@ import { dealer } from '@/data/dealer'
           </div>
           <div class="col-lg-5">
             <div class="d-flex flex-column flex-sm-row justify-content-lg-end gap-2">
-              <a class="btn btn-light btn-lg" :href="dealer.phoneHref">
+              <RouterLink class="btn btn-light btn-lg" :to="{ name: 'test-drive' }">
+                <i class="bi bi-calendar-check me-2"></i>Book a test drive
+              </RouterLink>
+              <a class="btn btn-outline-light btn-lg" :href="dealer.phoneHref">
                 <i class="bi bi-telephone me-2"></i>{{ dealer.phone }}
-              </a>
-              <a class="btn btn-outline-light btn-lg" :href="`mailto:${dealer.email}`">
-                <i class="bi bi-envelope me-2"></i>Email us
               </a>
             </div>
           </div>

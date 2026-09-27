@@ -3,8 +3,8 @@ export const mainNav = [
   { label: 'Used', hash: '#used-vehicles' },
   { label: 'Offers', hash: '#offers' },
   { label: 'Finance', name: 'finance' },
-  { label: 'Trade-In', hash: '#trade-in' },
-  { label: 'Service', hash: '#service' },
+  { label: 'Trade-In', name: 'trade-in' },
+  { label: 'Service', name: 'service' },
   { label: 'Locations', hash: '#locations' },
 ]
 

@@ -21,7 +21,7 @@ const slides = [
     title: 'Certified quality. Pre-owned price.',
     text: '172-point inspection, a 12-month/12,000-mile limited warranty and roadside assistance on every certified vehicle.',
     primary: { label: 'Shop used vehicles', hash: '#used-vehicles' },
-    secondary: { label: 'Value my trade', hash: '#trade-in' },
+    secondary: { label: 'Value my trade', name: 'trade-in' },
   },
   {
     id: 'service',
@@ -30,10 +30,15 @@ const slides = [
     eyebrow: 'Service center',
     title: 'Oil change and tire rotation from $59.95',
     text: 'Factory-trained technicians, genuine parts and a free multi-point inspection. Most visits done in under an hour.',
-    primary: { label: 'Book service', hash: '#service' },
+    primary: { label: 'Book service', name: 'service' },
     secondary: { label: 'Find a location', hash: '#locations' },
   },
 ]
+
+function slideTo(action) {
+  if (action.name) return { name: action.name }
+  return { name: 'home', hash: action.hash }
+}
 
 const AUTO_ADVANCE_MS = 5500
 
@@ -94,16 +99,10 @@ onBeforeUnmount(() => {
                   <h2 class="display-5 fw-bold mb-3">{{ slide.title }}</h2>
                   <p class="lead text-white-50 mb-4">{{ slide.text }}</p>
                   <div class="d-flex flex-column flex-sm-row gap-2">
-                    <RouterLink
-                      class="btn btn-light btn-lg"
-                      :to="{ name: 'home', hash: slide.primary.hash }"
-                    >
+                    <RouterLink class="btn btn-light btn-lg" :to="slideTo(slide.primary)">
                       {{ slide.primary.label }}
                     </RouterLink>
-                    <RouterLink
-                      class="btn btn-outline-light btn-lg"
-                      :to="{ name: 'home', hash: slide.secondary.hash }"
-                    >
+                    <RouterLink class="btn btn-outline-light btn-lg" :to="slideTo(slide.secondary)">
                       {{ slide.secondary.label }}
                     </RouterLink>
                   </div>
