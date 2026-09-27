@@ -1,3 +1,4 @@
+import { ROLES, permissionsFor } from '@/data/roles'
 import { filterInventory } from '@/utils/vehicles'
 import { db, nextId } from './db'
 
@@ -47,6 +48,9 @@ export function handleMockRequest(path, init = {}) {
   }
 
   const body = readBody(init)
+
+  const authResponse = handleAuth(method, pathname, headers, body)
+  if (authResponse) return authResponse
 
   if (method === 'GET' && match(pathname, '/vehicles')) {
     return json(200, filterInventory(db.vehicles, {
@@ -223,4 +227,94 @@ export function handleMockRequest(path, init = {}) {
   }
 
   return json(404, { message: `No mock route for ${method} ${pathname}` })
+}
+
+function publicUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    app: user.app,
+    permissions: permissionsFor(user.role),
+  }
+}
+
+function readBearer(headers) {
+  const raw = headers.Authorization ?? headers.authorization ?? ''
+  const prefix = 'Bearer '
+  if (!raw.startsWith(prefix)) return ''
+  return raw.slice(prefix.length)
+}
+
+function findSessionUser(headers) {
+  const token = readBearer(headers)
+  if (!token) return null
+  const session = db.sessions.find((item) => item.token === token)
+  if (session) {
+    return db.users.find((user) => user.id === session.userId) ?? null
+  }
+
+  // A full page reload re-creates db.sessions. The mock token still names the user,
+  // the way a JWT payload would — without a signature. Not production security.
+  const parts = String(token).split('.')
+  if (parts[0] !== 'mock') return null
+  const user = db.users.find((item) => String(item.id) === String(parts[1]))
+  if (user) db.sessions.push({ token, userId: user.id })
+  return user ?? null
+}
+
+function issueSession(user) {
+  const token = `mock.${user.id}.${Date.now()}`
+  db.sessions.push({ token, userId: user.id })
+  return { token, user: publicUser(user) }
+}
+
+function handleAuth(method, pathname, headers, body) {
+  if (method === 'POST' && match(pathname, '/auth/login')) {
+    const email = String(body.email ?? '').trim().toLowerCase()
+    const password = String(body.password ?? '')
+    const user = db.users.find((item) => item.email.toLowerCase() === email)
+    if (!user || user.password !== password) {
+      return json(401, { message: 'Email or password is wrong.' })
+    }
+    return json(200, issueSession(user))
+  }
+
+  if (method === 'POST' && match(pathname, '/auth/register')) {
+    const name = String(body.name ?? '').trim()
+    const email = String(body.email ?? '').trim().toLowerCase()
+    const password = String(body.password ?? '')
+    if (!name || !email || password.length < 8) {
+      return json(400, { message: 'Registration needs a name, email and a password of 8+ characters.' })
+    }
+    if (db.users.some((item) => item.email.toLowerCase() === email)) {
+      return json(409, { message: 'An account with that email already exists.' })
+    }
+    const user = {
+      id: nextId('user'),
+      name,
+      email,
+      password,
+      role: ROLES.CUSTOMER,
+      app: 'client',
+    }
+    db.users.push(user)
+    return json(201, issueSession(user))
+  }
+
+  if (method === 'POST' && match(pathname, '/auth/logout')) {
+    const token = readBearer(headers)
+    const index = db.sessions.findIndex((item) => item.token === token)
+    if (index !== -1) db.sessions.splice(index, 1)
+    return new Response(null, { status: 204 })
+  }
+
+  if (method === 'GET' && match(pathname, '/auth/me')) {
+    const user = findSessionUser(headers)
+    if (!user) return json(401, { message: 'Your session is missing or expired. Sign in again.' })
+    return json(200, publicUser(user))
+  }
+
+  return null
 }

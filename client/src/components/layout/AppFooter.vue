@@ -64,6 +64,22 @@ const currentYear = new Date().getFullYear()
                 My requests
               </RouterLink>
             </li>
+            <li class="mb-1">
+              <RouterLink
+                class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"
+                :to="{ name: 'account' }"
+              >
+                Account
+              </RouterLink>
+            </li>
+            <li class="mb-1">
+              <RouterLink
+                class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"
+                :to="{ name: 'login' }"
+              >
+                Sign in
+              </RouterLink>
+            </li>
             <li v-for="link in mainNav" :key="link.label" class="mb-1">
               <RouterLink
                 class="link-light link-opacity-75 link-opacity-100-hover text-decoration-none"

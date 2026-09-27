@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Collapse } from 'bootstrap'
 import { dealer } from '@/data/dealer'
 import { mainNav, navLinkTo } from '@/data/navigation'
@@ -10,12 +10,13 @@ import { useCompareStore } from '@/stores/compareStore'
 import { useFavoriteStore } from '@/stores/favoriteStore'
 
 const route = useRoute()
+const router = useRouter()
 const navCollapse = ref(null)
 const authStore = useAuthStore()
 const favoriteStore = useFavoriteStore()
 const compareStore = useCompareStore()
 
-const { isSignedIn, displayName, status: authStatus } = storeToRefs(authStore)
+const { isSignedIn, displayName } = storeToRefs(authStore)
 const { count: favoriteCount } = storeToRefs(favoriteStore)
 const { count: compareCount } = storeToRefs(compareStore)
 
@@ -23,6 +24,11 @@ watch(
   () => route.fullPath,
   () => Collapse.getInstance(navCollapse.value)?.hide(),
 )
+
+async function onLogout() {
+  await authStore.logout()
+  if (route.meta.requiresAuth) await router.replace({ name: 'home' })
+}
 </script>
 
 <template>
@@ -109,23 +115,22 @@ watch(
             </li>
           </ul>
           <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 ms-lg-3 mb-3 mb-lg-0">
-            <button
-              v-if="!isSignedIn"
-              type="button"
-              class="btn btn-outline-light btn-sm"
-              :disabled="authStatus === 'loading'"
-              @click="authStore.signIn()"
-            >
-              {{ authStatus === 'loading' ? 'Signing in…' : 'Sign in' }}
-            </button>
-            <button
-              v-else
-              type="button"
-              class="btn btn-outline-light btn-sm"
-              @click="authStore.signOut()"
-            >
-              {{ displayName }} · Sign out
-            </button>
+            <template v-if="!isSignedIn">
+              <RouterLink class="btn btn-outline-light btn-sm" :to="{ name: 'login' }">
+                Sign in
+              </RouterLink>
+              <RouterLink class="btn btn-outline-warning btn-sm" :to="{ name: 'register' }">
+                Register
+              </RouterLink>
+            </template>
+            <template v-else>
+              <RouterLink class="btn btn-outline-light btn-sm" :to="{ name: authStore.homeName }">
+                {{ displayName }} · {{ authStore.roleName }}
+              </RouterLink>
+              <button type="button" class="btn btn-outline-light btn-sm" @click="onLogout">
+                Sign out
+              </button>
+            </template>
             <RouterLink class="btn btn-warning fw-semibold" :to="{ name: 'test-drive' }">
               <i class="bi bi-calendar-check me-1"></i>Book a test drive
             </RouterLink>

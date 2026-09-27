@@ -1,3 +1,4 @@
+import { getStoredToken } from '@/auth/session'
 import { ApiError } from './errors'
 import { failNextRequest, mockConfig, randomDelay, wait } from './mock/config'
 import { handleMockRequest } from './mock/router'
@@ -20,6 +21,8 @@ async function parseResponse(response) {
 
 function buildInit(options) {
   const headers = { 'Content-Type': 'application/json', ...options.headers }
+  const token = getStoredToken()
+  if (token) headers.Authorization = `Bearer ${token}`
 
   if (options.fail || mockConfig.failNext) {
     headers['X-Mock-Fail'] = '1'

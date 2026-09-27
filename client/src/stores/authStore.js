@@ -1,49 +1,66 @@
 import { defineStore } from 'pinia'
+import { clearSession, readSession, writeSession } from '@/auth/session'
+import { hasPermission, homeRouteName, roleLabel } from '@/data/roles'
+import { getCurrentUser, login, logout, register } from '@/services/authService'
 
-const STORAGE_KEY = 'autodrive.auth'
-const demoShopper = { name: 'Alex Rivera', email: 'alex@example.com' }
-
-function readUser() {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
-  }
-}
-
-function persist(user) {
-  if (user) sessionStorage.setItem(STORAGE_KEY, JSON.stringify(user))
-  else sessionStorage.removeItem(STORAGE_KEY)
-}
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+function applySession(session) {
+  writeSession(session)
+  return session
 }
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: readUser(),
-    status: readUser() ? 'success' : 'initial',
-    error: null,
-  }),
+  state: () => {
+    const saved = readSession()
+    return {
+      token: saved.token,
+      user: saved.user,
+      ready: false,
+      status: saved.user ? 'success' : 'initial',
+      error: null,
+    }
+  },
 
   getters: {
-    isSignedIn: (state) => Boolean(state.user),
+    isSignedIn: (state) => Boolean(state.user && state.token),
     displayName: (state) => state.user?.name ?? 'Guest',
+    role: (state) => state.user?.role ?? '',
+    roleName: (state) => (state.user ? roleLabel(state.user.role) : 'Guest'),
+    homeName: (state) => homeRouteName(state.user?.role),
+    permissions: (state) => state.user?.permissions ?? [],
   },
 
   actions: {
-    async signIn(shopper = demoShopper) {
+    can(permission) {
+      return hasPermission(this.role, permission)
+    },
+
+    hasAnyRole(roles = []) {
+      return Boolean(this.user && roles.includes(this.user.role))
+    },
+
+    remember({ token, user }) {
+      this.token = token
+      this.user = user
+      this.status = 'success'
+      this.error = null
+      applySession({ token, user })
+    },
+
+    clear() {
+      this.token = null
+      this.user = null
+      this.status = 'initial'
+      this.error = null
+      clearSession()
+    },
+
+    async login(credentials) {
       this.status = 'loading'
       this.error = null
-
       try {
-        await wait(500)
-        this.user = { ...shopper }
-        this.status = 'success'
-        persist(this.user)
-        return this.user
+        const session = await login(credentials)
+        this.remember(session)
+        return session.user
       } catch (error) {
         this.error = error
         this.status = 'error'
@@ -51,11 +68,49 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    signOut() {
-      this.user = null
-      this.status = 'initial'
+    async register(payload) {
+      this.status = 'loading'
       this.error = null
-      persist(null)
+      try {
+        const session = await register(payload)
+        this.remember(session)
+        return session.user
+      } catch (error) {
+        this.error = error
+        this.status = 'error'
+        throw error
+      }
+    },
+
+    async logout() {
+      try {
+        await logout()
+      } catch {
+        // Local session still has to die even if the mock POST fails.
+      }
+      this.clear()
+    },
+
+    async restoreSession() {
+      if (this.ready) return
+      if (!this.token) {
+        this.ready = true
+        return
+      }
+
+      try {
+        this.user = await getCurrentUser()
+        writeSession({ token: this.token, user: this.user })
+        this.status = 'success'
+      } catch {
+        this.clear()
+      } finally {
+        this.ready = true
+      }
+    },
+
+    signOut() {
+      return this.logout()
     },
   },
 })

@@ -71,6 +71,25 @@ export function validateServiceBooking(form) {
   }
 }
 
+export function validateLogin(form) {
+  return collectErrors({
+    email: validEmail(form.email),
+    password: required(form.password, 'Password is required.'),
+  })
+}
+
+export function validateRegister(form) {
+  return collectErrors({
+    name: required(String(form.name ?? '').trim(), 'Name is required.'),
+    email: validEmail(form.email),
+    password:
+      required(form.password, 'Password is required.') ||
+      (String(form.password).length < 8 ? 'Use at least 8 characters.' : ''),
+    confirm:
+      form.confirm !== form.password ? 'Passwords do not match.' : '',
+  })
+}
+
 export function validateTradeIn(form) {
   return collectErrors({
     make: required(String(form.make ?? '').trim(), 'Make is required.'),

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { APP_ROLES } from '@/data/roles'
 import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
@@ -59,6 +60,41 @@ const router = createRouter({
       path: '/credits',
       name: 'credits',
       component: () => import('@/views/CreditsView.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/LoginView.vue'),
+      meta: { guestOnly: true },
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('@/views/RegisterView.vue'),
+      meta: { guestOnly: true },
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: () => import('@/views/AccountView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/cms',
+      name: 'cms',
+      component: () => import('@/views/CmsHomeView.vue'),
+      meta: { requiresAuth: true, roles: APP_ROLES.cms },
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: () => import('@/views/AdminHomeView.vue'),
+      meta: { requiresAuth: true, roles: APP_ROLES.admin },
+    },
+    {
+      path: '/forbidden',
+      name: 'forbidden',
+      component: () => import('@/views/ForbiddenView.vue'),
     },
     {
       path: '/:pathMatch(.*)*',

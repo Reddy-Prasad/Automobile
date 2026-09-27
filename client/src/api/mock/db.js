@@ -1,3 +1,4 @@
+import { seedUsers } from '@/data/users'
 import { vehicles as seedVehicles } from '@/data/vehicles'
 
 function clone(value) {
@@ -6,6 +7,8 @@ function clone(value) {
 
 export const db = {
   vehicles: clone(seedVehicles),
+  users: clone(seedUsers),
+  sessions: [],
   customers: [],
   testDrives: [],
   financeApplications: [],
@@ -14,6 +17,7 @@ export const db = {
 }
 
 const counters = {
+  user: seedUsers.length + 1,
   customer: 1,
   testDrive: 1,
   finance: 1,
