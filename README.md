@@ -40,6 +40,10 @@ npm run dev       # content desk at http://localhost:5181/cms/login
 cd admin
 npm install
 npm run dev       # operations desk at http://localhost:5182/admin/login
+
+# tests (from the repo root after npm install in client, cms, admin, and .)
+npm test          # Vitest in all three apps
+npm run test:e2e  # Playwright (starts or reuses 5173 / 5181 / 5182)
 ```
 
 ## Project structure (client)
@@ -212,12 +216,22 @@ admin/
 - Database words with dealership examples: table, row, keys, one-to-many, JOIN concept
 - Flip `VITE_USE_MOCK=false` in `.env` — views and services stay. See [docs/dotnet-for-ui.md](docs/dotnet-for-ui.md)
 
+### Day 14 — Professional frontend engineering
+
+- No new dealership features. Debug in 12 steps; ten realistic API / Vue / CSS bugs
+- Vitest + Vue Test Utils in `client/`, `cms/`, `admin/`. Playwright in `e2e/`
+- Covered: vehicle search, details, finance, test drive, CMS publish, Admin create
+- A11y pass: skip link, labelled controls, modal focus / Escape, alt text, `aria-live` on EMI
+- See [docs/debugging.md](docs/debugging.md) and [docs/testing.md](docs/testing.md)
+
 ## Learning notes
 
 - [Task tracker](docs/tasks.md): what's done, your practice exercises, known limitations and the roadmap. Updated every day.
 - [Interview questions & answers](docs/interview-qa.md): question index for self-testing plus full answers, grouped by day. Updated every day.
 - [API handling and request state](docs/api-handling.md): one page for `http.js` (mock vs real API) and INITIAL / LOADING / SUCCESS / EMPTY / ERROR / Retry.
 - [.NET for UI developers](docs/dotnet-for-ui.md): REST, status codes, Network tab, database words, mock → `fetch`.
+- [Debugging](docs/debugging.md): 12-step process, DevTools, realistic AutoDrive bugs.
+- [Testing](docs/testing.md): Vitest, Vue Test Utils, Playwright, a11y and viewports.
 - [Authentication and authorization](docs/auth.md): who you are vs what you may do, tokens vs session, what .NET would change.
 - [Client architecture](docs/client-architecture.md): Component → Composable → Store → Service → Mock API.
 

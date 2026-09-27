@@ -168,6 +168,31 @@ Questions collected while building AutoDrive, grouped by day. Each answer is wri
 9. Primary key vs foreign key — use test drives.
 10. What do you change — and what do you not change — when the mock becomes a .NET API?
 
+**[Day 14 — Professional frontend engineering](#day-14--professional-frontend-engineering)**
+
+Debugging
+
+1. Walk the 12-step debug process on “inventory is empty.”
+2. Console vs Network vs Elements — which first, and why?
+3. 200 with an empty UI — name two different root causes.
+4. How do you prove a 401 vs a missing `Authorization` header?
+5. Spinner never stops — which status field do you look at?
+6. Modal does not open — Vue state or CSS first?
+7. What belongs in a ticket to the .NET team?
+
+Testing
+
+8. Vitest vs Vue Test Utils vs Playwright — one sentence each.
+9. Why mock `request()` in a service test?
+10. What does a Playwright test prove that a unit test cannot?
+11. How would you test CMS publish without becoming a C# developer?
+
+Performance
+
+12. Network timing vs Performance panel Scripting — which is whose bug?
+13. Why lazy-load `/vehicles/:id` but not the homepage?
+14. What does `loading="lazy"` on a vehicle image actually do?
+
 ---
 
 ## Day 1 — Project foundation
@@ -903,3 +928,61 @@ Primary key: `TestDrives.Id` uniquely names that booking. Foreign key: `VehicleI
 ### 10. What do you change — and what do you not change — when the mock becomes a .NET API?
 
 Change `.env` (`VITE_USE_MOCK=false`, `VITE_API_BASE_URL`) and restart Vite. Change a service path only if .NET used different names. Do **not** rewrite views, stores, or put `fetch` in a `.vue` file.
+
+## Day 14 — Professional frontend engineering
+
+### 1. Walk the 12-step debug process on “inventory is empty.”
+
+Reproduce on `/vehicles`. Expected: cards. Actual: blank. Console for `[API]` / TypeError. Network (or footer log) for the GET. Read request URL, response JSON, status. Then Pinia `items` and `listStatus`. Then the view’s computed filter. CSS last. Fix the layer the evidence named. Reload and search again.
+
+### 2. Console vs Network vs Elements — which first, and why?
+
+Console first (did JS die?). Network second (did HTTP happen and what did it return?). Elements last (DOM / CSS). Opening Elements first is how you waste an hour on a 422.
+
+### 3. 200 with an empty UI — name two different root causes.
+
+The API returned `[]` — Empty state is correct. Or the API returned cars and Vue bound `Price` instead of `price`, or a computed filter dropped every row. Pinia `items.length` tells them apart.
+
+### 4. How do you prove a 401 vs a missing `Authorization` header?
+
+Network → that request → Request Headers. No `Bearer` → Vue / `http.js` never attached the token (check Application → sessionStorage). Header present and 401 → the API rejected the token.
+
+### 5. Spinner never stops — which status field do you look at?
+
+`listStatus` / `status` on the composable. `ResourceState` shows the spinner while it is `loading`. If the promise threw and nobody set `error`, it never leaves `loading`.
+
+### 6. Modal does not open — Vue state or CSS first?
+
+Vue state. If `open` is false, there is no dialog in the DOM. Elements cannot find a z-index bug on a node that was never rendered.
+
+### 7. What belongs in a ticket to the .NET team?
+
+Method, URL, status, request JSON, response JSON. Not a screenshot of the Vue component tree.
+
+### 8. Vitest vs Vue Test Utils vs Playwright — one sentence each.
+
+Vitest runs fast Node tests on functions and stores. Vue Test Utils mounts one SFC and checks props, emits, and DOM. Playwright drives a real browser across client / CMS / Admin.
+
+### 9. Why mock `request()` in a service test?
+
+The service’s job is the path, method, and body. A unit test should not wait on the mock delay or the network. `vi.mock('@/api/http')` proves `listVehicles({ make: 'Honda' })` called `/vehicles?make=Honda`.
+
+### 10. What does a Playwright test prove that a unit test cannot?
+
+That the real page, router, Bootstrap, and mock API work together: Morgan can fill Create vehicle and see **2026 Honda Civic**.
+
+### 11. How would you test CMS publish without becoming a C# developer?
+
+Unit: `transitionContent('pages', 'summer-hours', 'publish')` POSTs the action. Workflow table: publish only from `approved` with `cms.publish`. Playwright: Jordan opens Summer hours and clicks Publish. No SQL.
+
+### 12. Network timing vs Performance panel Scripting — which is whose bug?
+
+Long Network bar: API or latency (or our mock 450ms). Long Scripting: Vue work on the main thread. Do not “optimize images” for a 2-second GET.
+
+### 13. Why lazy-load `/vehicles/:id` but not the homepage?
+
+Everyone hits `/` first. Details is a separate chunk so the first paint does not download the gallery and forms. `HomeView` is eager on purpose.
+
+### 14. What does `loading="lazy"` on a vehicle image actually do?
+
+The browser fetches the photo when it nears the viewport. Page 1 of inventory should not download page 4’s trucks. It does not shrink the file.

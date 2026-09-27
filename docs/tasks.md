@@ -24,6 +24,7 @@ Updated at the end of every day, before the `docs:` commit.
 | 11 | CMS application | ✅ Done | — |
 | 12 | Admin application | ✅ Done | — |
 | 13 | Real backend knowledge (UI) | ✅ Done | — |
+| 14 | Professional frontend engineering | ✅ Done | — |
 
 ---
 
@@ -263,6 +264,22 @@ Updated at the end of every day, before the `docs:` commit.
 
 ---
 
+## Day 14 — Professional frontend engineering
+
+**Goal:** stop adding features. Debug in a fixed order, add Vitest / Vue Test Utils / Playwright on the real flows, and close obvious accessibility gaps. No new dealership pages.
+
+| # | Task | Status | Where |
+|---|---|---|---|
+| 1 | 12-step debug process + 10 realistic bugs | ✅ | [debugging.md](debugging.md) |
+| 2 | Chrome panels: Console, Network, Elements, Application, Performance | ✅ | same |
+| 3 | Viewport checklist: 375 / 768 / 1280 / 1440 | ✅ | [testing.md](testing.md) |
+| 4 | Vitest + Vue Test Utils on client, CMS, Admin | ✅ | `src/**/*.spec.js` |
+| 5 | Playwright: search, details, finance, test drive, CMS publish, Admin create | ✅ | `e2e/` |
+| 6 | A11y: skip link, labels, focus, alt, `aria-live`, semantic `main` | ✅ | layouts + `FormField` + `Modal` |
+| 7 | Learn: debugging / testing / performance questions | ✅ | [Q&A Day 14](interview-qa.md#day-14--professional-frontend-engineering) |
+
+---
+
 ## Your practice exercises
 
 Exercises for you to write yourself. Paste your code in chat to get it reviewed.
@@ -295,6 +312,8 @@ Exercises for you to write yourself. Paste your code in chat to get it reviewed.
 | 24 | Answer the Day 12 questions in [interview-qa.md](interview-qa.md#day-12--admin-application) out loud | Day 12 | ⬜ |
 | 25 | Open Network on a real site you use, find one XHR, and name method, status, and whether the id is a path or query param | Day 13 | ⬜ |
 | 26 | Answer the Day 13 questions in [interview-qa.md](interview-qa.md#day-13--real-backend-integration-knowledge) out loud | Day 13 | ⬜ |
+| 27 | Break the inventory search on purpose, then walk the 12 debug steps out loud before you fix it | Day 14 | ⬜ |
+| 28 | Answer the Day 14 questions in [interview-qa.md](interview-qa.md#day-14--professional-frontend-engineering) out loud | Day 14 | ⬜ |
 
 ---
 
@@ -312,7 +331,7 @@ Things that work but are deliberately unfinished. Each one lists the day that sh
 | 6 | Hash links on the homepage still get `aria-current="page"` | Those links all point at the `home` route; the hash is ignored | Later, when New/Used become real routes |
 | 7 | Extra inventory cars reuse photos of a similar model | We only downloaded 12 Commons images | Inventory polish / more photos |
 | 8 | Filter choices in the URL are read once, not kept in sync as you type | Enough to deep-link from the homepage; a full query-string sync is later work | Pinia / inventory polish |
-| 9 | No tests, no linting | Not covered yet | Testing day |
+| 9 | ~~No tests~~ / no linting | Vitest + Playwright added. ESLint still later | Lint / later |
 | 10 | Mock data lives in memory; refresh of the tab keeps it, restarting Vite resets POST/PATCH/DELETE | There is no real database | .NET API day |
 | 11 | Homepage locations still read local modules | Offers/banners/nav/footer/SEO can come from `cms-published.json` | Locations later / .NET |
 | 12 | ~~CMS and Admin are guarded stubs~~ | Both are separate Vite apps | Done (Days 11–12) |
@@ -336,8 +355,8 @@ A suggested order for upcoming days. It will change as we go, so treat it as a p
 | 11 | ~~CMS app~~ | ✅ Done: `cms/` on 5181, draft → publish → client |
 | 12 | ~~Admin app~~ | ✅ Done: `admin/` on 5182, inventory CRUD → client lot |
 | 13 | ~~.NET-for-UI knowledge~~ | ✅ Done: HTTP, REST, status codes, Network, DB words |
-| 14 | Performance and production | Lazy loading, image optimisation, build and deploy |
-| 15 | Testing | Vitest unit tests and Playwright end-to-end tests |
+| 14 | ~~Professional frontend engineering~~ | ✅ Done: debug process, Vitest, Playwright, a11y pass |
+| 15 | Performance and production | Lazy loading review, image optimisation, build and deploy |
 
 ---
 
